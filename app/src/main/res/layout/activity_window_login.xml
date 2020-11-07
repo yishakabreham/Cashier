@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activities.windowLogin"
+    android:background="@color/white">
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <RelativeLayout
+                android:id="@+id/rlWelcome"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="60dp">
+                <TextView
+                    android:id="@+id/txtWelcome"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:fontFamily="@font/open_sans_bold"
+                    android:text="Welcome"
+                    android:textAllCaps="true"
+                    android:textColor="@color/st_patrick_blue"
+                    android:textSize="35sp" />
+                <TextView
+                    android:id="@+id/txtWelcome2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/txtWelcome"
+                    android:layout_centerHorizontal="true"
+                    android:fontFamily="@font/open_sans_regular"
+                    android:text="Sign in to continue"
+                    android:textAllCaps="true"
+                    android:textColor="@color/celestial_blue"
+                    android:textSize="12sp" />
+            </RelativeLayout>
+            <RelativeLayout
+                android:id="@+id/rlUserName"
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:layout_below="@id/rlWelcome">
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="10dp"
+                    android:background="@drawable/custom_relative_layout"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true">
+                    <TextView
+                        android:id="@+id/lblUserName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentTop="true"
+                        android:layout_marginLeft="20dp"
+                        android:fontFamily="@font/open_sans_regular"
+                        android:text="Username"
+                        android:textColor="@color/st_patrick_blue"
+                        android:textSize="11dp" />
+                    <ImageView
+                        android:id="@+id/imageUser"
+                        android:layout_width="20dp"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/lblUserName"
+                        android:layout_alignLeft="@id/lblUserName"
+                        android:src="@drawable/icon_user" />
+                    <AutoCompleteTextView
+                        android:id="@+id/txtUserName"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_alignTop="@id/imageUser"
+                        android:layout_marginLeft="20dp"
+                        android:layout_toRightOf="@id/imageUser"
+                        android:background="@android:color/transparent"
+                        android:fontFamily="@font/open_sans_regular"
+                        android:hint="Enter valid username"
+                        android:textCursorDrawable="@null"
+                        android:textSize="12dp" />
+                </RelativeLayout>
+            </RelativeLayout>
+            <RelativeLayout
+                android:id="@+id/rlPassword"
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:layout_below="@id/rlUserName">
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="10dp"
+                    android:background="@drawable/custom_relative_layout"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true">
+                    <TextView
+                        android:id="@+id/lblPassword"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentTop="true"
+                        android:layout_marginLeft="20dp"
+                        android:fontFamily="@font/open_sans_regular"
+                        android:text="Password"
+                        android:textColor="@color/st_patrick_blue"
+                        android:textSize="11dp" />
+                    <ImageView
+                        android:id="@+id/imagePassword"
+                        android:layout_width="20dp"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/lblPassword"
+                        android:layout_alignLeft="@id/lblPassword"
+                        android:src="@drawable/icon_password" />
+
+                    <AutoCompleteTextView
+                        android:id="@+id/txtPassword"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_alignTop="@id/imagePassword"
+                        android:layout_marginLeft="20dp"
+                        android:layout_toRightOf="@id/imagePassword"
+                        android:background="@android:color/transparent"
+                        android:fontFamily="@font/open_sans_regular"
+                        android:hint="Enter your password"
+                        android:inputType="textPassword"
+                        android:textCursorDrawable="@null"
+                        android:textSize="12dp" />
+                </RelativeLayout>
+            </RelativeLayout>
+
+            <CheckBox
+                android:id="@+id/cbxRemember"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/rlPassword"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="20dp"
+                android:fontFamily="@font/open_sans_regular"
+                android:text="Remember me"
+                android:textColor="@color/st_patrick_blue"
+                android:textSize="11dp" />
+            <Button
+                android:id="@+id/btnLogin"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_below="@id/cbxRemember"
+                android:layout_margin="10dp"
+                android:background="@drawable/custom_login_button"
+                android:fontFamily="@font/open_sans_regular"
+                android:text="Login"
+                android:textColor="@color/white"
+                android:textAllCaps="true"
+                android:textSize="16dp" />
+        </RelativeLayout>
+    </ScrollView>
+</RelativeLayout>

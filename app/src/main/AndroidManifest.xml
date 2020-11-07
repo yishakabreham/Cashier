@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="et.com.cashier">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <activity android:name=".activities.NumberPickerActivity"></activity>
+        <activity android:name=".activities.windowTripDetail" />
+        <activity android:name=".activities.windowPaymentOption" />
+        <activity android:name=".activities.windowPassengerInfoConfirmation" />
+        <activity android:name=".activities.windowSeatArrangement" />
+        <activity android:name=".activities.windowPassengerDetail" />
+        <activity android:name=".activities.windowTrip" />
+        <activity android:name=".activities.windowDashboard" />
+        <activity android:name=".activities.windowLogin" />
+        <activity android:name=".MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>

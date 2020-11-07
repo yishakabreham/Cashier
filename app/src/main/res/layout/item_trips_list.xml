@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="8dp">
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/txtRouteDesc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        android:textSize="11dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:textColor="@color/st_patrick_blue"
+        android:fontFamily="@font/open_sans_regular"
+        android:textStyle="bold"
+        android:textAllCaps="true"
+        android:layout_toLeftOf="@id/txtBusDesc"
+        android:layout_alignParentLeft="true"/>
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/txtRouteDescTranslation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="መቀለ - አዲስ አበባ"
+        android:textSize="11sp"
+        android:layout_below="@id/txtRouteDesc"
+        android:layout_marginTop="5dp"
+        android:textColor="@color/celestial_blue"
+        android:textStyle="bold"
+        android:layout_marginRight="10dp"
+        android:fontFamily="@font/open_sans_regular"
+        android:layout_toLeftOf="@id/txtTripUnitAmount"
+        android:layout_alignLeft="@id/txtRouteDesc"/>
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/txtBusDesc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        android:textSize="10sp"
+        android:textColor="@color/st_patrick_blue"
+        android:layout_marginRight="10dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignBottom="@id/txtRouteDesc"
+        android:fontFamily="@font/open_sans_regular"
+        android:textStyle="bold"
+        android:textAllCaps="true"/>
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/txtTripUnitAmount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        android:textSize="11sp"
+        android:textStyle="bold"
+        android:textColor="@color/celestial_blue"
+        android:layout_marginRight="10dp"
+        android:layout_alignBottom="@id/txtRouteDescTranslation"
+        android:layout_alignParentRight="true"
+        android:fontFamily="@font/open_sans_regular"/>
+    </RelativeLayout>
+</RelativeLayout>

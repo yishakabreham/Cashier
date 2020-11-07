@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="20dp">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white">
+        <TextView
+            android:id="@+id/todaySN"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="SN"
+            android:fontFamily="@font/open_sans_regular"
+            android:textColor="@color/st_patrick_blue"
+            android:textSize="9dp"
+            android:padding="3dp"
+            android:layout_marginLeft="8dp"/>
+        <TextView
+            android:id="@+id/todayRoute"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/todaySN"
+            android:layout_marginLeft="15dp"
+            android:text="Addis Ababa - Mekelle"
+            android:fontFamily="@font/open_sans_regular"
+            android:textColor="@color/st_patrick_blue"
+            android:textSize="9dp"
+            android:textAllCaps="true"
+            android:padding="3dp"/>
+        <TextView
+            android:id="@+id/todayPrice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:text="ETB 610.00"
+            android:fontFamily="@font/open_sans_regular"
+            android:textColor="@color/st_patrick_blue"
+            android:textSize="9dp"
+            android:textAllCaps="true"
+            android:padding="3dp"
+            android:layout_marginRight="10dp"/>
+    </RelativeLayout>
+</RelativeLayout>

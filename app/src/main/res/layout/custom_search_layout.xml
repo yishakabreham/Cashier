@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <RelativeLayout
+        android:id="@+id/rlSearchOrganization"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:background="@color/whiteSmock">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/custom_relative_layout"
+            android:layout_margin="10dp"
+            android:elevation="3dp"
+            android:focusable="true"
+            android:focusableInTouchMode="true">
+            <ImageView
+                android:id="@+id/imageSearch"
+                android:layout_width="12dp"
+                android:layout_height="wrap_content"
+                android:src="@drawable/icon_search_black"
+                android:layout_marginLeft="30dp"/>
+            <AutoCompleteTextView
+                android:id="@+id/textSearch"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_toRightOf="@id/imageSearch"
+                android:layout_marginLeft="20dp"
+                android:hint="Search..."
+                android:fontFamily="@font/open_sans_regular"
+                android:textSize="11dp"
+                android:background="@android:color/transparent"
+                android:textCursorDrawable="@null" />
+        </RelativeLayout>
+    </RelativeLayout>
+</RelativeLayout>

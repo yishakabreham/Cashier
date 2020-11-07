@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".fragments.trip.fragment01">
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerDate"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_below="@id/tbTrips"
+        android:background="@color/white"/>
+    <RelativeLayout
+        android:id="@+id/searchTrip"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:layout_below="@id/recyclerDate">
+        <include layout="@layout/custom_search_layout" />
+    </RelativeLayout>
+    <ListView
+        android:id="@+id/listTrips"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/searchTrip" />
+</RelativeLayout>
