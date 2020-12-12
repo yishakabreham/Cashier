@@ -1,6 +1,7 @@
 package et.com.cashier.fragments.trip;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -29,6 +30,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import et.com.cashier.R;
 import et.com.cashier.activities.windowTrip;
+import et.com.cashier.activities.windowTripDetail;
 import et.com.cashier.adapters.RecyclerTouchListener;
 import et.com.cashier.model.TripDate;
 import et.com.cashier.model.TripDetail;
@@ -48,14 +50,20 @@ public class fragment01 extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    {
         View rootView = inflater.inflate(R.layout.fragment_fragment01, container, false);
         init(rootView);
         itemEventListener();
         new GetTrips().execute();
 
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(getActivity(), windowTripDetail.class);
+                startActivity(intent);
+            }
+        });
         staticData();
         return rootView;
     }
