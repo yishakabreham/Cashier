@@ -6,6 +6,9 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import et.com.cashier.R;
 import et.com.cashier.adapters.RecyclerTouchListener;
+import et.com.cashier.model.Company;
+import et.com.cashier.model.User;
+import et.com.cashier.utilities.EthiopianCalendar;
 
 import android.content.Context;
 import android.content.Intent;
@@ -19,11 +22,20 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 public class windowDashboard extends AppCompatActivity
 {
+    private TextView companyName;
+    private TextView name;
+    private TextView role;
+    private TextView gregorianDate_, ethiopianDate_;
+
     private List<DashBoardItem> dashBoardItemListBody;
     private RecyclerView recyclerViewBody;
     private GridLayoutManager gridLayoutManagerBody;
@@ -66,8 +78,53 @@ public class windowDashboard extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_window_dashboard);
 
+        initializeComponents();
+        setDate();
+        getData();
         init();
         listeners();
+    }
+    private void initializeComponents()
+    {
+        companyName = findViewById(R.id.compTV);
+        name = findViewById(R.id.userNTV);
+        role = findViewById(R.id.userRoleTV);
+        recyclerViewBody = findViewById(R.id.body);
+        listViewTrips = findViewById(R.id.listTrips);
+        dailyTripCount = findViewById(R.id.dailyTripCount);
+        gregorianDate_ = findViewById(R.id.dateEn);
+        ethiopianDate_ = findViewById(R.id.dateAm);
+    }
+    private void setDate()
+    {
+        Calendar calendar = Calendar.getInstance();
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH) + 1;
+        int date = calendar.get(Calendar.DAY_OF_MONTH);
+
+        EthiopianCalendar ethiopianCalendar = new EthiopianCalendar(year, month, date, 1723856);
+        int[] result = ethiopianCalendar.gregorianToEthiopic(year, month, date);
+
+        SimpleDateFormat sdf = new SimpleDateFormat("EEEE");
+        Date d = new Date();
+        String dayOfTheWeek = sdf.format(d);
+
+        String amMonth = monthMapper(result[1]);
+        String amDayMapper = dayMapper(dayOfTheWeek);
+        String ethiopianDate = String.format("%s %s %d %d", amDayMapper, amMonth, result[2], result[0]);
+
+        gregorianDate_.setText(DateFormat.getDateInstance(DateFormat.FULL).format(calendar.getTime()));
+        ethiopianDate_.setText(ethiopianDate);
+    }
+    private void getData()
+    {
+        Bundle bundle = getIntent().getExtras();
+        User user = bundle.getParcelable("user");
+        Company company = bundle.getParcelable("company");
+
+        companyName.setText(company.getBrandName());
+        name.setText(user.getName());
+        role.setText(user.getPosition());
     }
     private void init()
     {
@@ -83,13 +140,11 @@ public class windowDashboard extends AppCompatActivity
             dashBoardItemListBody.add(item);
         }
         gridLayoutManagerBody = new GridLayoutManager(this, 2, RecyclerView.VERTICAL, false);
-        recyclerViewBody = findViewById(R.id.body);
         recyclerViewBody.setLayoutManager(gridLayoutManagerBody);
         adapterBody = new DashboardAdapter(windowDashboard.this, dashBoardItemListBody);
         recyclerViewBody.setAdapter(adapterBody);
         recyclerViewBody.setNestedScrollingEnabled(false);
 
-        listViewTrips = findViewById(R.id.listTrips);
         ArrayList<TodayTrips> trips = new ArrayList();
 
         for(int i = 0; i < routes.length; i++)
@@ -104,7 +159,6 @@ public class windowDashboard extends AppCompatActivity
         TodayTripsAdapter adapter = new TodayTripsAdapter(this, trips);
         listViewTrips.setAdapter(adapter);
 
-        dailyTripCount = findViewById(R.id.dailyTripCount);
         dailyTripCount.setText("Total " + trips.size() + " Trips");
     }
     private void listeners()
@@ -288,5 +342,80 @@ public class windowDashboard extends AppCompatActivity
         public void setUnitPrice(String unitPrice) {
             this.unitPrice = unitPrice;
         }
+    }
+    private String monthMapper(int index)
+    {
+        String result = "";
+        switch (index)
+        {
+            case 1:
+                result = "መስከረም";
+                break;
+            case 2:
+                result = "ጥቅምት";
+                break;
+            case 3:
+                result = "ህዳር";
+                break;
+            case 4:
+                result = "ታህሳስ";
+                break;
+            case 5:
+                result = "ጥር";
+                break;
+            case 6:
+                result = "የካቲት";
+                break;
+            case 7:
+                result = "መጋቢት";
+                break;
+            case 8:
+                result = "ሚያዝያ";
+                break;
+            case 9:
+                result = "ግንቦት";
+                break;
+            case 10:
+                result = "ሰኔ";
+                break;
+            case 11:
+                result = "ሃምሌ";
+                break;
+            case 12:
+                result = "ነሃሴ";
+                break;
+            case 13:
+                result = "ጳጉሜ";
+                break;
+        }
+        return result;
+    }
+    private String dayMapper(String index)
+    {
+        String result = "";
+        switch (index) {
+            case "Monday":
+                result = "ሰኞ";
+                break;
+            case "Tuesday":
+                result = "ማክሰኞ";
+                break;
+            case "Wednesday":
+                result = "ረቡዕ";
+                break;
+            case "Thursday":
+                result = "ሃሙስ";
+                break;
+            case "Friday":
+                result = "አርብ";
+                break;
+            case "Saturday":
+                result = "ቅዳሜ";
+                break;
+            case "Sunday":
+                result = "እሁድ";
+                break;
+        }
+        return result;
     }
 }

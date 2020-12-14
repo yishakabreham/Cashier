@@ -11,6 +11,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".MainActivity"/>
         <activity android:name=".activities.NumberPickerActivity"></activity>
         <activity android:name=".activities.windowTripDetail" />
         <activity android:name=".activities.windowPaymentOption" />
@@ -19,14 +20,11 @@
         <activity android:name=".activities.windowPassengerDetail" />
         <activity android:name=".activities.windowTrip" />
         <activity android:name=".activities.windowDashboard" />
-        <activity android:name=".activities.windowLogin" />
-        <activity android:name=".MainActivity">
+        <activity android:name=".activities.windowLogin">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
     </application>
-
 </manifest>

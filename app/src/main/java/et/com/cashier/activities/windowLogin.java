@@ -1,5 +1,6 @@
 package et.com.cashier.activities;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import et.com.cashier.R;
 import et.com.cashier.model.Company;
@@ -8,13 +9,21 @@ import et.com.cashier.model.UserInformation;
 import et.com.cashier.network.HttpHandler;
 import et.com.cashier.utilities.windowProgress;
 
+import android.content.Intent;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Parcelable;
+import android.text.Html;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.google.android.material.snackbar.Snackbar;
+
 import org.json.JSONObject;
+
+import java.io.Serializable;
 
 public class windowLogin extends AppCompatActivity {
     private EditText txtUserName, txtPassword;
@@ -43,14 +52,25 @@ public class windowLogin extends AppCompatActivity {
             @Override
             public void onClick(View view)
             {
-                String userName = txtUserName.getText().toString();
-                String password = txtPassword.getText().toString();
+                if(txtUserName.getText() != null && !txtUserName.getText().toString().equals("") &&
+                        txtPassword.getText() != null && !txtPassword.getText().toString().equals(""))
+                {
+                    String userName = txtUserName.getText().toString();
+                    String password = txtPassword.getText().toString();
 
-                String[] params = new String[2];
-                params[0] = userName;
-                params[1] = password;
+                    String[] params = new String[2];
+                    params[0] = userName;
+                    params[1] = password;
 
-                new GetUser().execute(params);
+                    new GetUser().execute(params);
+                }
+                else
+                {
+                    View rootLayout = findViewById(R.id.rootLayout);
+                    Snackbar snackbar = Snackbar
+                            .make(rootLayout, Html.fromHtml("<B>Error</B><Br/>Please type your username and password"), Snackbar.LENGTH_LONG);
+                    snackbar.show();
+                }
             }
         });
     }
@@ -128,10 +148,15 @@ public class windowLogin extends AppCompatActivity {
             super.onPostExecute(userInformation);
             if(userInformation != null)
             {
+                Intent intent = new Intent(windowLogin.this, windowDashboard.class);
+                intent.putExtra("user", userInformation.getUser());
+                intent.putExtra("company", userInformation.getCompany());
 
+                windowProgress progress = windowProgress.getInstance();
+                progress.hideProgress();
+
+                startActivity(intent);
             }
-            windowProgress progress = windowProgress.getInstance();
-            progress.hideProgress();
         }
     }
 }
