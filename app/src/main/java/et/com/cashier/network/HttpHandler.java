@@ -37,8 +37,9 @@ public class HttpHandler
 
     }
 
-    public String makeServiceCall(String reqUrl)
+    public String[] makeServiceCall(String reqUrl)
     {
+        String[] result = new String[2];
         String response = null;
 
         try
@@ -47,13 +48,13 @@ public class HttpHandler
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
             int status = conn.getResponseCode();
-
+            result[0] = String.valueOf(status);
             // read the response
             InputStream inputStream = conn.getErrorStream();
 
             InputStream in = new BufferedInputStream(conn.getInputStream());
             response = convertStreamToString(in);
-
+            result[1] = response;
         }
         catch (MalformedURLException e)
         {
@@ -73,7 +74,7 @@ public class HttpHandler
             Log.e(TAG, "HTTP Exception: " + e.getMessage());
             e.printStackTrace();
         }
-        return response;
+        return result;
     }
 
     public JSONArray makeServiceCallPost(RequestPackage requestPackage, Context mContext)

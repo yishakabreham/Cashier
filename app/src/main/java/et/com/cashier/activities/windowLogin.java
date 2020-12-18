@@ -68,7 +68,7 @@ public class windowLogin extends AppCompatActivity {
                 {
                     View rootLayout = findViewById(R.id.rootLayout);
                     Snackbar snackbar = Snackbar
-                            .make(rootLayout, Html.fromHtml("<B>Error</B><Br/>Please type your username and password"), Snackbar.LENGTH_LONG);
+                            .make(rootLayout, Html.fromHtml("<B>Error</B><Br/>please type your username and password"), Snackbar.LENGTH_LONG);
                     snackbar.show();
                 }
             }
@@ -86,41 +86,54 @@ public class windowLogin extends AppCompatActivity {
 
             formattedURL = String.format(urlLogin, userName, password);
             newURL = formattedURL.replaceAll(" ", "%20");
+            String[] response = httpHandler.makeServiceCall(newURL);
 
-            jsonStr = httpHandler.makeServiceCall(newURL);
-            if(jsonStr != null && !jsonStr.toLowerCase().equals("null\n"))
+            if(response != null)
             {
-                try
+                int statusCode = Integer.parseInt(response[0]);
+                userInformation.setStatus(statusCode);
+                if(statusCode == 200)
                 {
-                    JSONObject jsonObject = new JSONObject(jsonStr);
-                    userInformation.setToken(jsonObject.getString("token"));
-                    JSONObject jsonObjectUser = jsonObject.getJSONObject("user");
-                    if(jsonObjectUser != null)
+                    jsonStr = response[1];
+                    if(jsonStr != null && !jsonStr.toLowerCase().equals("null\n"))
                     {
-                        User user = new User();
-                        user.setId(jsonObjectUser.getString("id"));
-                        user.setName(jsonObjectUser.getString("name"));
-                        user.setDob(jsonObjectUser.getString("dob"));
-                        user.setTitle(jsonObjectUser.getString("title"));
-                        user.setGender(jsonObjectUser.getString("gender"));
-                        user.setPosition(jsonObjectUser.getString("position"));
-                        user.setActive(jsonObjectUser.getBoolean("isActive"));
+                        try
+                        {
+                            JSONObject jsonObject = new JSONObject(jsonStr);
+                            userInformation.setToken(jsonObject.getString("token"));
+                            JSONObject jsonObjectUser = jsonObject.getJSONObject("user");
+                            if(jsonObjectUser != null)
+                            {
+                                User user = new User();
+                                user.setId(jsonObjectUser.getString("id"));
+                                user.setName(jsonObjectUser.getString("name"));
+                                user.setDob(jsonObjectUser.getString("dob"));
+                                user.setTitle(jsonObjectUser.getString("title"));
+                                user.setGender(jsonObjectUser.getString("gender"));
+                                user.setPosition(jsonObjectUser.getString("position"));
+                                user.setActive(jsonObjectUser.getBoolean("isActive"));
 
-                        userInformation.setUser(user);
-                    }
-                    JSONObject jsonObjectCompany = jsonObject.getJSONObject("company");
-                    if(jsonObjectCompany != null)
-                    {
-                        Company company = new Company();
-                        company.setBrandName(jsonObjectCompany.getString("brandName"));
-                        company.setTradeName(jsonObjectCompany.getString("tradeName"));
+                                userInformation.setUser(user);
+                            }
+                            JSONObject jsonObjectCompany = jsonObject.getJSONObject("company");
+                            if(jsonObjectCompany != null)
+                            {
+                                Company company = new Company();
+                                company.setBrandName(jsonObjectCompany.getString("brandName"));
+                                company.setTradeName(jsonObjectCompany.getString("tradeName"));
 
-                        userInformation.setCompany(company);
+                                userInformation.setCompany(company);
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            ex.printStackTrace();
+                        }
                     }
                 }
-                catch (Exception ex)
+                else
                 {
-                    ex.printStackTrace();
+                    userInformation.setStatus(0);
                 }
             }
             return userInformation;
@@ -146,7 +159,7 @@ public class windowLogin extends AppCompatActivity {
         protected void onPostExecute(UserInformation userInformation)
         {
             super.onPostExecute(userInformation);
-            if(userInformation != null)
+            if(userInformation != null && userInformation.getStatus() == 200)
             {
                 Intent intent = new Intent(windowLogin.this, windowDashboard.class);
                 intent.putExtra("user", userInformation.getUser());
@@ -156,6 +169,27 @@ public class windowLogin extends AppCompatActivity {
                 progress.hideProgress();
 
                 startActivity(intent);
+            }
+            else if(userInformation != null && userInformation.getStatus() == 0)
+            {
+                windowProgress progress = windowProgress.getInstance();
+                progress.hideProgress();
+
+                View rootLayout = findViewById(R.id.rootLayout);
+                Snackbar snackbar = Snackbar
+                        .make(rootLayout, Html.fromHtml("<B>Unauthorized user</B><Br/>username or password incorrect"), Snackbar.LENGTH_LONG);
+                snackbar.show();
+            }
+            else
+            {
+                windowProgress progress = windowProgress.getInstance();
+                progress.hideProgress();
+
+                View rootLayout = findViewById(R.id.rootLayout);
+                Snackbar snackbar = Snackbar
+                        .make(rootLayout, Html.fromHtml("<B>Error</B><Br/>error occurred while fetching data from server"), Snackbar.LENGTH_LONG);
+                snackbar.show();
+                return;
             }
         }
     }

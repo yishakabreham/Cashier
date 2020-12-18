@@ -5,6 +5,7 @@ import android.os.Parcelable;
 
 public class UserInformation implements Parcelable
 {
+    private int status;
     private String token;
     private User user;
     private Company company;
@@ -59,6 +60,14 @@ public class UserInformation implements Parcelable
 
     public void setCompany(Company company) {
         this.company = company;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
     }
 }
 

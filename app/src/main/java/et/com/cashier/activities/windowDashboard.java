@@ -111,7 +111,7 @@ public class windowDashboard extends AppCompatActivity
 
         String amMonth = monthMapper(result[1]);
         String amDayMapper = dayMapper(dayOfTheWeek);
-        String ethiopianDate = String.format("%s %s %d %d", amDayMapper, amMonth, result[2], result[0]);
+        String ethiopianDate = String.format("%s ፡ %s %d ፡ %d", amDayMapper, amMonth, result[2], result[0]);
 
         gregorianDate_.setText(DateFormat.getDateInstance(DateFormat.FULL).format(calendar.getTime()));
         ethiopianDate_.setText(ethiopianDate);
@@ -253,17 +253,14 @@ public class windowDashboard extends AppCompatActivity
         public int getCount() {
             return trips.size();
         }
-
         @Override
         public Object getItem(int position) {
             return trips.get(position);
         }
-
         @Override
         public long getItemId(int i) {
             return 0;
         }
-
         @Override
         public View getView(int i, View view, ViewGroup viewGroup)
         {
