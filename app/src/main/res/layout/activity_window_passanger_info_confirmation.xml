@@ -54,7 +54,7 @@
                 android:id="@+id/txtPassengerName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Yishak Abreham Gebremichael"
+                android:text="Yishak Abreham"
                 android:fontFamily="@font/open_sans_regular"
                 android:textColor="@color/greenColor"
                 android:textAllCaps="true"
@@ -115,7 +115,7 @@
                 android:background="@drawable/custom_cancel_button"
                 android:layout_below="@id/btnContinueToPayment"
                 android:layout_marginTop="15dp"
-                android:text="Seat Arrangement / ወንበር"
+                android:text="Cancel / ይሰርዙ"
                 android:textColor="@color/white"
                 android:fontFamily="@font/open_sans_regular"/>
     </RelativeLayout>

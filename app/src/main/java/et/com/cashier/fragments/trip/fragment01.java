@@ -8,6 +8,7 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +20,8 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.google.android.material.snackbar.Snackbar;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -29,67 +32,175 @@ import java.util.List;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import et.com.cashier.R;
-import et.com.cashier.activities.windowTrip;
+import et.com.cashier.activities.windowLogin;
+import et.com.cashier.activities.windowSeatArrangement;
 import et.com.cashier.activities.windowTripDetail;
 import et.com.cashier.adapters.RecyclerTouchListener;
 import et.com.cashier.model.TripDate;
 import et.com.cashier.model.TripDetail;
-import et.com.cashier.network.HttpHandler;
-import et.com.cashier.network.RequestPackage;
+import et.com.cashier.network.retrofit.API;
+import et.com.cashier.network.retrofit.pojo.Trip;
+import et.com.cashier.network.retrofit.pojo.Trip_;
+import et.com.cashier.network.retrofit.post.TripSearchCriteria;
+import et.com.cashier.network.volley.HttpHandler;
+import et.com.cashier.network.volley.RequestPackage;
+import et.com.cashier.utilities.windowProgress;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class fragment01 extends Fragment {
+    private Trip trip;
+    private String token;
+    private TripSearchCriteria searchCriteria;
+
     private GridLayoutManager gridLayoutManager;
     private DateAdapter dateAdapter;
     private TripAdapter adapter;
     private RecyclerView recyclerView;
     private ListView listView;
     private static String urlGetTrips = "http://192.168.1.126:5055/bus/Client/GetTrips";
+    private static String urlTrips = "http://192.168.1.155:8101/Trips/getTripsByDate";
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         View rootView = inflater.inflate(R.layout.fragment_fragment01, container, false);
         init(rootView);
         itemEventListener();
-        new GetTrips().execute();
+        GetData();
+        GetTrips_(token, searchCriteria);
 
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(getActivity(), windowTripDetail.class);
-                startActivity(intent);
-            }
-        });
-        staticData();
         return rootView;
     }
-
-    private void staticData()
+    private void GetData()
     {
-        String[] tripDescriptions = {"Addis Ababa - Mekelle", "Addis Ababa - Jimma", "Addis Ababa - Dessie", "Jimma - Addis Ababa",
-                "Addis Ababa - Gondar", "Mekelle - Bahirdar", "Shire - Addis Ababa"};
-        String[] busDesciptions = {"Selam Bus 1", "Selam Bus 2", "Selam Bus 1", "Selam Bus 2", "Selam Bus 3", "Selam Bus 1", "Selam Bus 4"};
-        String[] price = {"600", "178", "250", "1140", "470", "369", "80"};
+        Bundle bundle = getActivity().getIntent().getExtras();
+        token = bundle.getString("token");
 
-        List<TripDetail> tripDetails = new ArrayList<>();
-        for(int i = 0; i < tripDescriptions.length; i++)
-        {
-            TripDetail detail = new TripDetail();
-            detail.setRouteDesc(tripDescriptions[i]);
-            detail.setBusDesc(busDesciptions[i]);
-            detail.setTripUnitAmount(Double.parseDouble(price[i]));
-
-            tripDetails.add(detail);
-        }
-
-        TripAdapter adapter = new TripAdapter(getActivity(), tripDetails);
-        listView.setAdapter(adapter);
+        searchCriteria = new TripSearchCriteria();
+        searchCriteria.setFromDate("12-04-2020");
+        searchCriteria.setToDate("");
+        searchCriteria.setSource("");
+        searchCriteria.setDestination("");
     }
+    private void GetTrips_(String token, TripSearchCriteria searchCriteria)
+    {
+        final windowProgress progress = windowProgress.getInstance();
+        progress.showProgress(getActivity(), "Getting Trips", false);
 
+        API.tripList(token).getTrips(searchCriteria)
+            .enqueue(new Callback<Trip>() {
+            @Override
+            public void onResponse(Call<Trip> call, Response<Trip> response)
+            {
+                if(response.isSuccessful() && response.code() == 200)
+                {
+                    trip = response.body();
+                    inflateList(trip.getTrips());
+                }
+                else
+                {
+
+                }
+                progress.hideProgress();
+            }
+            @Override
+            public void onFailure(Call<Trip> call, Throwable t) {
+
+            }
+        });
+    }
+    private class TripAdapter extends BaseAdapter implements Filterable
+    {
+        private Context context;
+        private LayoutInflater inflater;
+
+        private List<Trip_> trips;
+        private List<Trip_> tripList;
+
+        public TripAdapter(Context context, List<Trip_> trips)
+        {
+            this.context = context;
+            this.trips = trips;
+
+            inflater = (LayoutInflater)context.
+                    getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        }
+        @Override
+        public int getCount() {
+            return trips.size();
+        }
+        @Override
+        public Object getItem(int position) {
+            return trips.get(position);
+        }
+        @Override
+        public long getItemId(int position) {
+            return position;
+        }
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent)
+        {
+            Holder holder = new Holder();
+            View rowView;
+
+            rowView = inflater.inflate(R.layout.item_trips_list, null);
+
+            holder.busDesc = rowView.findViewById(R.id.txtBusDesc);
+            holder.tripDesc = rowView.findViewById(R.id.txtRouteDesc);
+            holder.tripAmount = rowView.findViewById(R.id.txtTripUnitAmount );
+            holder.tripDescTranslation = rowView.findViewById(R.id.txtRouteDescTranslation);
+
+            holder.busDesc.setText(trips.get(position).getBusName());
+            holder.tripDesc.setText(trips.get(position).getSource() + " - " + trips.get(position).getDestination());
+            holder.tripDescTranslation.setText(trips.get(position).getSourceLocal() + " - " + trips.get(position).getDestinationLocal());
+            holder.tripAmount.setText("ETB " + trips.get(position).getPrice());
+
+            return rowView;
+        }
+        @Override
+        public Filter getFilter()
+        {
+            return new Filter() {
+
+                @Override
+                protected FilterResults performFiltering(CharSequence constraint) {
+                    final FilterResults oReturn = new FilterResults();
+                    final ArrayList<Trip_> results = new ArrayList<>();
+
+                    if(tripList == null)
+                        tripList = trips;
+                    if (constraint != null)
+                    {
+                        if (tripList != null && tripList.size() > 0) {
+                            for (final Trip_ g : tripList) {
+                                if (g.getSource().toLowerCase()
+                                        .contains(constraint.toString()))
+                                    results.add(g);
+                            }
+                        }
+                        oReturn.values = results;
+                    }
+                    return oReturn;
+                }
+
+                @SuppressWarnings("unchecked")
+                @Override
+                protected void publishResults(CharSequence constraint,
+                                              FilterResults results) {
+                    trips = (ArrayList<Trip_>) results.values;
+                    notifyDataSetChanged();
+                }
+            };
+        }
+        public void notifyDataSetChanged() {
+            super.notifyDataSetChanged();
+        }
+    }
     private void init(View rootView)
     {
         listView = rootView.findViewById(R.id.listTrips);
@@ -106,7 +217,6 @@ public class fragment01 extends Fragment {
         recyclerView .setAdapter(dateAdapter);
         recyclerView .setNestedScrollingEnabled(false);
     }
-
     private void itemEventListener()
     {
         recyclerView.addOnItemTouchListener(new RecyclerTouchListener(getActivity(), recyclerView, new RecyclerTouchListener.ClickListener() {
@@ -122,10 +232,9 @@ public class fragment01 extends Fragment {
             }
         }));
     }
-
-    private void inflateList(List<TripDetail> tripDetails)
+    private void inflateList(List<Trip_> trips)
     {
-        adapter = new TripAdapter(getActivity(), tripDetails);
+        adapter = new TripAdapter(getActivity(), trips);
         listView.setAdapter(adapter);
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener()
@@ -133,16 +242,19 @@ public class fragment01 extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l)
             {
-                TripDetail tripDetail = (TripDetail) adapter.getItem(i);
+                Trip_ trip_ = (Trip_) adapter.getItem(i);
+
+                Intent intent = new Intent(getActivity(), windowSeatArrangement.class);
+                intent.putExtra("token", token);
+                intent.putExtra("tripCode", trip_.getTripCode());
+                startActivity(intent);
             }
         });
     }
-
     private class Holder
     {
-        TextView busDesc, tripDesc, tripAmount;
+        TextView busDesc, tripDesc, tripAmount, tripDescTranslation;
     }
-
     public static class DateAdapter extends RecyclerView.Adapter<DateAdapter.vHolder>
     {
         private Context context;
@@ -212,177 +324,6 @@ public class fragment01 extends Fragment {
         public Object getItem(int position)
         {
             return tripDates.get(position);
-        }
-    }
-
-    private class TripAdapter extends BaseAdapter implements Filterable
-    {
-        private Context context;
-        private LayoutInflater inflater;
-
-        private List<TripDetail> tripDetails;
-        private List<TripDetail> tripDetailList;
-
-        public TripAdapter(Context context, List<TripDetail> tripDetails)
-        {
-            this.context = context;
-            this.tripDetails = tripDetails;
-
-            inflater = (LayoutInflater)context.
-                    getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        }
-
-        @Override
-        public int getCount() {
-            return tripDetails.size();
-        }
-
-        @Override
-        public Object getItem(int position) {
-            return tripDetails.get(position);
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return position;
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent)
-        {
-            Holder holder = new Holder();
-            View rowView;
-
-            rowView = inflater.inflate(R.layout.item_trips_list, null);
-
-            holder.busDesc = rowView.findViewById(R.id.txtBusDesc);
-            holder.tripDesc = rowView.findViewById(R.id.txtRouteDesc);
-            holder.tripAmount = rowView.findViewById(R.id.txtTripUnitAmount );
-
-            holder.busDesc.setText(tripDetails.get(position).getBusDesc());
-            holder.tripDesc.setText(tripDetails.get(position).getRouteDesc());
-            holder.tripAmount.setText("ETB " + String.valueOf(tripDetails.get(position).getTripUnitAmount()));
-
-            return rowView;
-        }
-
-        @Override
-        public Filter getFilter()
-        {
-            return new Filter() {
-
-                @Override
-                protected FilterResults performFiltering(CharSequence constraint) {
-                    final FilterResults oReturn = new FilterResults();
-                    final ArrayList<TripDetail> results = new ArrayList<>();
-
-                    if(tripDetailList == null)
-                        tripDetailList = tripDetails;
-                    if (constraint != null)
-                    {
-                        if (tripDetailList != null && tripDetailList.size() > 0) {
-                            for (final TripDetail g : tripDetailList) {
-                                if (g.getRouteDesc().toLowerCase()
-                                        .contains(constraint.toString()))
-                                    results.add(g);
-                            }
-                        }
-                        oReturn.values = results;
-                    }
-                    return oReturn;
-                }
-
-                @SuppressWarnings("unchecked")
-                @Override
-                protected void publishResults(CharSequence constraint,
-                                              FilterResults results) {
-                    tripDetails = (ArrayList<TripDetail>) results.values;
-                    notifyDataSetChanged();
-                }
-            };
-        }
-
-        public void notifyDataSetChanged() {
-            super.notifyDataSetChanged();
-        }
-    }
-
-    private class GetTrips extends AsyncTask<Void, Void, List<TripDetail>>
-    {
-        private List<TripDetail> getTripDetails()
-        {
-            JSONArray jsonArray = null;
-            HttpHandler httpHandler = new HttpHandler();
-            ArrayList<TripDetail> tripDetails = new ArrayList<>();
-
-            RequestPackage requestPackage = new RequestPackage();
-            JSONObject jsonObjectPost = new JSONObject();
-            try
-            {
-                jsonObjectPost.put("id", "1122334455");
-                jsonObjectPost.put("fromDate", "12-04-2020");
-                jsonObjectPost.put("toDate", "14-04-2020");
-
-                requestPackage.setMethod("POST");
-                requestPackage.setUri(urlGetTrips);
-                requestPackage.setJsonObject(jsonObjectPost);
-
-                jsonArray = httpHandler.makeServiceCallPost(requestPackage, getActivity());
-            }
-            catch (JSONException e) {
-                e.printStackTrace();
-            }
-
-            if (jsonArray != null)
-            {
-                try
-                {
-                    for (int i = 0; i < jsonArray.length(); i++)
-                    {
-                        JSONObject jsonObject = jsonArray.getJSONObject(i);
-                        TripDetail tripDetail = new TripDetail();
-
-                        tripDetail.setId(jsonObject.getString("id"));
-                        tripDetail.setTripCode(jsonObject.getString("tripCode"));
-                        tripDetail.setTripDate(jsonObject.getString("tripDate"));
-                        tripDetail.setBusDesc(jsonObject.getString("busDesc"));
-                        tripDetail.setTripUnitAmount(jsonObject.getDouble("tripUnitAmount"));
-                        tripDetail.setTripDiscount(jsonObject.getDouble("tripDiscount"));
-                        tripDetail.setRouteDesc(jsonObject.getString("routeDesc"));
-                        tripDetail.setTimeLength(jsonObject.getDouble("timeLength"));
-
-                        tripDetails.add(tripDetail);
-                    }
-                }
-                catch (JSONException e)
-                {
-                    e.printStackTrace();
-                }
-            }
-            return tripDetails;
-        }
-
-        @Override
-        protected void onPreExecute()
-        {
-            super.onPreExecute();
-        }
-        @Override
-        protected List<TripDetail> doInBackground(Void... voids)
-        {
-            return getTripDetails();
-        }
-        @Override
-        protected void onPostExecute(List<TripDetail> tripDetails)
-        {
-            if(tripDetails != null && tripDetails.size() > 0)
-            {
-                inflateList(tripDetails);
-            }
-            else
-            {
-                //do sth
-            }
         }
     }
 }

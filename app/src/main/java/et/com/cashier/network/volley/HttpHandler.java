@@ -1,4 +1,4 @@
-package et.com.cashier.network;
+package et.com.cashier.network.volley;
 
 import android.content.Context;
 import android.os.StrictMode;
@@ -13,8 +13,6 @@ import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
 
 import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -25,8 +23,6 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
-
-import et.com.cashier.model.TripDetail;
 
 public class HttpHandler
 {

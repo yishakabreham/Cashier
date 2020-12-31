@@ -1,4 +1,4 @@
-package et.com.cashier.network;
+package et.com.cashier.network.volley;
 
 import org.json.JSONArray;
 import org.json.JSONObject;

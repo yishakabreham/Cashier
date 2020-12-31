@@ -1,13 +1,7 @@
 package et.com.cashier;
 
 import androidx.appcompat.app.AppCompatActivity;
-import et.com.cashier.activities.NumberPickerActivity;
-import et.com.cashier.activities.windowDashboard;
 import et.com.cashier.activities.windowLogin;
-import et.com.cashier.activities.windowPassengerDetail;
-import et.com.cashier.activities.windowPassengerInfoConfirmation;
-import et.com.cashier.activities.windowTrip;
-import et.com.cashier.activities.windowTripDetail;
 
 import android.content.Intent;
 import android.os.Bundle;

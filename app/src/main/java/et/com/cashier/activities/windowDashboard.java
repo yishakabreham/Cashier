@@ -7,12 +7,17 @@ import androidx.recyclerview.widget.RecyclerView;
 import et.com.cashier.R;
 import et.com.cashier.adapters.RecyclerTouchListener;
 import et.com.cashier.model.Company;
-import et.com.cashier.model.User;
+import et.com.cashier.network.retrofit.pojo.User;
+import et.com.cashier.network.retrofit.API;
+import et.com.cashier.network.retrofit.post.TripSearchCriteria;
 import et.com.cashier.utilities.EthiopianCalendar;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,6 +36,7 @@ import java.util.List;
 
 public class windowDashboard extends AppCompatActivity
 {
+    private String token;
     private TextView companyName;
     private TextView name;
     private TextView role;
@@ -119,6 +125,7 @@ public class windowDashboard extends AppCompatActivity
     private void getData()
     {
         Bundle bundle = getIntent().getExtras();
+        token = bundle.getString("token");
         User user = bundle.getParcelable("user");
         Company company = bundle.getParcelable("company");
 
@@ -171,6 +178,7 @@ public class windowDashboard extends AppCompatActivity
                 {
                     case 0:
                         Intent intent = new Intent(windowDashboard.this, windowTrip.class);
+                        intent.putExtra("token", token);
                         startActivity(intent);
                         break;
                 }

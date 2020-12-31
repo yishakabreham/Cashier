@@ -1,10 +1,7 @@
-package et.com.cashier.model;
+package et.com.cashier.network.retrofit.pojo;
 
-import android.os.Build;
 import android.os.Parcel;
 import android.os.Parcelable;
-
-import androidx.annotation.RequiresApi;
 
 public class User implements Parcelable
 {

@@ -2,14 +2,14 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/navigation_home"
-        android:icon="@drawable/icon_cashier"
-        android:title="Title 1" />
+        android:icon="@drawable/icon_calendar_"
+        android:title="Search by date" />
     <item
         android:id="@+id/navigation_booking"
-        android:icon="@drawable/icon_copyright"
-        android:title="Title 2" />
+        android:icon="@drawable/icon_location"
+        android:title="Search by place" />
     <item
         android:id="@+id/navigation_ticket"
-        android:icon="@drawable/icon_dashboard"
-        android:title="Title 3" />
+        android:icon="@drawable/icon_miscellaneous"
+        android:title="Miscellaneous" />
 </menu>

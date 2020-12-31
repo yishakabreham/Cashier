@@ -1,51 +1,18 @@
 package et.com.cashier.activities;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import et.com.cashier.R;
-import et.com.cashier.adapters.RecyclerTouchListener;
 import et.com.cashier.fragments.trip.fragment01;
 import et.com.cashier.fragments.trip.fragment02;
 import et.com.cashier.fragments.trip.fragment03;
-import et.com.cashier.model.TripDate;
-import et.com.cashier.model.TripDetail;
-import et.com.cashier.network.HttpHandler;
-import et.com.cashier.network.RequestPackage;
 
-import android.content.Context;
-import android.graphics.Color;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.MenuItem;
-import android.view.SubMenu;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.BaseAdapter;
-import android.widget.Filter;
-import android.widget.Filterable;
-import android.widget.ImageView;
-import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.navigation.NavigationView;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class windowTrip extends AppCompatActivity
 {
@@ -111,5 +78,6 @@ public class windowTrip extends AppCompatActivity
         fragmentTransaction.commit();
 
         bottomNavigationView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+        bottomNavigationView.setItemIconTintList(null);
     }
 }

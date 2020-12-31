@@ -5,17 +5,84 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".activities.windowPassengerDetail">
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/tbPassengerDetail"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/toolbar_size"
+        android:theme="@style/ToolBarStyle"
+        android:background="@color/colorPrimary">
+    </androidx.appcompat.widget.Toolbar>
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_below="@id/tbPassengerDetail">
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
             <RelativeLayout
+                android:id="@+id/rlSearch"
+                android:layout_width="match_parent"
+                android:layout_height="160dp">
+                <RelativeLayout
+                    android:id="@+id/id"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:background="@drawable/custom_relative_layout"
+                    android:layout_margin="10dp"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true">
+                    <TextView
+                        android:id="@+id/lblSearch"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Mobile Number / ስልክ ቁጥር"
+                        android:fontFamily="@font/open_sans_regular"
+                        android:textColor="@color/blueBlackDark"
+                        android:layout_alignParentTop="true"
+                        android:layout_marginLeft="20dp"
+                        android:textSize="10dp"/>
+                    <ImageView
+                        android:id="@+id/imageSearchS"
+                        android:layout_width="20dp"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/lblSearch"
+                        android:layout_alignLeft="@id/lblSearch"
+                        android:src="@drawable/icon_search"/>
+                    <AutoCompleteTextView
+                        android:id="@+id/txtSearch"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_toRightOf="@id/imageSearchS"
+                        android:layout_marginLeft="20dp"
+                        android:hint="Mobile Number"
+                        android:fontFamily="@font/open_sans_regular"
+                        android:textSize="11dp"
+                        android:background="@android:color/transparent"
+                        android:textCursorDrawable="@null"
+                        android:layout_alignTop="@id/imageSearchS"
+                        android:inputType="number"
+                        android:maxLength="10"/>
+                </RelativeLayout>
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_below="@id/id">
+                    <Button
+                        android:id="@+id/btnPassengerDetailSearchCustomer"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:background="@color/greenColor"
+                        android:layout_margin="10dp"
+                        android:text="Search Customer / ደምበኛ ይፈልጉ"
+                        android:textColor="@color/white"
+                        android:fontFamily="@font/open_sans_regular"/>
+                </RelativeLayout>
+            </RelativeLayout>
+            <RelativeLayout
                 android:id="@+id/rlTin"
                 android:layout_width="match_parent"
                 android:layout_height="80dp"
-                android:layout_marginTop="25dp">
+                android:layout_below="@id/rlSearch">
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -140,7 +207,7 @@
                         android:background="@android:color/transparent"
                         android:textCursorDrawable="@null"
                         android:layout_alignTop="@id/imagePassword"
-                        android:inputType="textPassword"/>
+                        android:inputType="text"/>
                 </RelativeLayout>
             </RelativeLayout>
             <RelativeLayout
@@ -184,14 +251,58 @@
                         android:background="@android:color/transparent"
                         android:textCursorDrawable="@null"
                         android:layout_alignTop="@id/imagePhone"
-                        android:inputType="textPassword"/>
+                        android:inputType="text"/>
+                </RelativeLayout>
+            </RelativeLayout>
+            <RelativeLayout
+                android:id="@+id/rlOther"
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:layout_below="@id/rlPhone">
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/custom_relative_layout"
+                    android:layout_margin="10dp"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true">
+                    <TextView
+                        android:id="@+id/lblOther"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Additional Information / ተጨማሪ መረጃ"
+                        android:fontFamily="@font/open_sans_regular"
+                        android:textColor="@color/blueBlackDark"
+                        android:layout_alignParentTop="true"
+                        android:layout_marginLeft="20dp"
+                        android:textSize="10dp"/>
+                    <ImageView
+                        android:id="@+id/imageOther"
+                        android:layout_width="20dp"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/lblOther"
+                        android:layout_alignLeft="@id/lblOther"
+                        android:src="@drawable/icon_miscellaneous"/>
+                    <AutoCompleteTextView
+                        android:id="@+id/txtOther"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_toRightOf="@id/imageOther"
+                        android:layout_marginLeft="20dp"
+                        android:hint="Enter Additional Information"
+                        android:fontFamily="@font/open_sans_regular"
+                        android:textSize="11dp"
+                        android:background="@android:color/transparent"
+                        android:textCursorDrawable="@null"
+                        android:layout_alignTop="@id/imageOther"
+                        android:inputType="text"/>
                 </RelativeLayout>
             </RelativeLayout>
             <Button
                 android:id="@+id/btnPassengerDetail"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:layout_below="@id/rlPhone"
+                android:layout_below="@id/rlOther"
                 android:background="@drawable/custom_login_button"
                 android:layout_margin="10dp"
                 android:text="Confirm Passenger Detail / ያረጋግጡ"
