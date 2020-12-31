@@ -13,11 +13,10 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".activities.windowTickets_"
-            android:label="@string/title_activity_window_tickets_"
+            android:name=".activities.windowMiddleTicket"
+            android:label="@string/title_activity_window_middle_ticket"
             android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity android:name=".MainActivity" />
-        <activity android:name=".activities.NumberPickerActivity" />
         <activity android:name=".activities.windowTripDetail" />
         <activity android:name=".activities.windowPaymentOption" />
         <activity android:name=".activities.windowPassengerInfoConfirmation" />
