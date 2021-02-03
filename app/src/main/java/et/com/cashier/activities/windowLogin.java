@@ -2,13 +2,9 @@ package et.com.cashier.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 import et.com.cashier.R;
-import et.com.cashier.model.Company;
-import et.com.cashier.network.retrofit.pojo.User;
 import et.com.cashier.network.retrofit.pojo.UserInformation;
-import et.com.cashier.network.volley.HttpHandler;
 import et.com.cashier.network.retrofit.API;
 import et.com.cashier.network.retrofit.post.UserCredential;
-import et.com.cashier.utilities.windowProgress;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -25,8 +21,8 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 
 import com.google.android.material.snackbar.Snackbar;
-
-import org.json.JSONObject;
+import com.microsoft.signalr.HubConnection;
+import com.microsoft.signalr.HubConnectionBuilder;
 
 public class windowLogin extends AppCompatActivity
 {
@@ -43,12 +39,40 @@ public class windowLogin extends AppCompatActivity
     private static final String userName = "userNameKey";
     private static final String password = "passwordKey";
 
+    private static HubConnection hubConnection;
+    public static HubConnection getHubConnection()
+    {
+        return hubConnection;
+    }
+
+    public void setHubConnection(HubConnection hubConnection) {
+        this.hubConnection = hubConnection;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_window_login);
 
         init();
+
+        setHubConnection(HubConnectionBuilder.create("http://192.168.1.155:8101/chat").build());
+        new HubConnectionTask().execute(getHubConnection());
+    }
+
+    class HubConnectionTask extends AsyncTask<HubConnection, Void, Void> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected Void doInBackground(HubConnection... hubConnections) {
+            HubConnection hubConnection = hubConnections[0];
+            hubConnection.start().blockingAwait();
+            return null;
+        }
     }
 
     private void init() {
@@ -57,7 +81,7 @@ public class windowLogin extends AppCompatActivity
         txtPassword = findViewById(R.id.txtPassword);
         checkBoxRemember = findViewById(R.id.cbxRemember);
 
-        PopUserData();
+        popUserData();
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view)
@@ -85,6 +109,7 @@ public class windowLogin extends AppCompatActivity
             }
         });
     }
+
     private void GetUser_(String userName, final String password)
     {
         final windowProgress progress = windowProgress.getInstance();
@@ -109,6 +134,7 @@ public class windowLogin extends AppCompatActivity
 
                             if(checkBoxRemember.isChecked())
                                 RememberUser(txtUserName.getText().toString(), txtPassword.getText().toString());
+                            progress.hideProgress();
                             startActivity(intent);
                         }
                         else if(response.code() == 401)
@@ -116,6 +142,14 @@ public class windowLogin extends AppCompatActivity
                             View rootLayout = findViewById(R.id.rootLayout);
                             Snackbar snackbar = Snackbar
                                     .make(rootLayout, Html.fromHtml("<B>Unauthorized user</B><Br/>username or password incorrect"), Snackbar.LENGTH_LONG);
+                            snackbar.show();
+                            progress.hideProgress();
+                        }
+                        else if(response.code() == 500)
+                        {
+                            View rootLayout = findViewById(R.id.rootLayout);
+                            Snackbar snackbar = Snackbar
+                                    .make(rootLayout, Html.fromHtml("<B>Server error</B><Br/>the server is temporarily down"), Snackbar.LENGTH_LONG);
                             snackbar.show();
                         }
                         progress.hideProgress();
@@ -150,7 +184,7 @@ public class windowLogin extends AppCompatActivity
         }
         editor.commit();
     }
-    private void PopUserData()
+    private void popUserData()
     {
         sharedPreferences = getSharedPreferences(userPreference,
                 Context.MODE_PRIVATE);
@@ -160,125 +194,6 @@ public class windowLogin extends AppCompatActivity
         }
         if (sharedPreferences.contains(password)) {
             txtPassword.setText(sharedPreferences.getString(password, ""));
-        }
-    }
-    private class GetUser extends AsyncTask<String[], Void, UserInformation>
-    {
-        private UserInformation getUser(String userName, String password)
-        {
-            UserInformation userInformation = new UserInformation();
-            HttpHandler httpHandler = new HttpHandler();
-
-            String formattedURL;
-            String newURL;
-
-            formattedURL = String.format(urlLogin, userName, password);
-            newURL = formattedURL.replaceAll(" ", "%20");
-            String[] response = httpHandler.makeServiceCall(newURL);
-
-            if(response != null)
-            {
-                int statusCode = Integer.parseInt(response[0]);
-                userInformation.setApproved(statusCode);
-                if(statusCode == 200)
-                {
-                    jsonStr = response[1];
-                    if(jsonStr != null && !jsonStr.toLowerCase().equals("null\n"))
-                    {
-                        try
-                        {
-                            JSONObject jsonObject = new JSONObject(jsonStr);
-                            userInformation.setToken(jsonObject.getString("token"));
-                            JSONObject jsonObjectUser = jsonObject.getJSONObject("user");
-                            if(jsonObjectUser != null)
-                            {
-                                User user = new User();
-                                user.setId(jsonObjectUser.getString("id"));
-                                user.setName(jsonObjectUser.getString("name"));
-                                user.setDob(jsonObjectUser.getString("dob"));
-                                user.setTitle(jsonObjectUser.getString("title"));
-                                user.setGender(jsonObjectUser.getString("gender"));
-                                user.setPosition(jsonObjectUser.getString("position"));
-                                user.setActive(jsonObjectUser.getBoolean("isActive"));
-
-                                userInformation.setUser(user);
-                            }
-                            JSONObject jsonObjectCompany = jsonObject.getJSONObject("company");
-                            if(jsonObjectCompany != null)
-                            {
-                                Company company = new Company();
-                                company.setBrandName(jsonObjectCompany.getString("brandName"));
-                                company.setTradeName(jsonObjectCompany.getString("tradeName"));
-
-                                userInformation.setCompany(company);
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            ex.printStackTrace();
-                        }
-                    }
-                }
-                else
-                {
-                    userInformation.setApproved(0);
-                }
-            }
-            return userInformation;
-        }
-
-        @Override
-        protected void onPreExecute()
-        {
-            super.onPreExecute();
-
-            windowProgress progress = windowProgress.getInstance();
-            progress.showProgress(windowLogin.this, "Logging in", false);
-        }
-
-        @Override
-        protected UserInformation doInBackground(String[]... voids)
-        {
-            String[] parameters = voids[0];
-            return getUser(parameters[0], parameters[1]);
-        }
-
-        @Override
-        protected void onPostExecute(UserInformation userInformation)
-        {
-            super.onPostExecute(userInformation);
-            if(userInformation != null && userInformation.getApproved() == 200)
-            {
-                Intent intent = new Intent(windowLogin.this, windowDashboard.class);
-                intent.putExtra("user", userInformation.getUser());
-                intent.putExtra("company", userInformation.getCompany());
-
-                windowProgress progress = windowProgress.getInstance();
-                progress.hideProgress();
-
-                startActivity(intent);
-            }
-            else if(userInformation != null && userInformation.getApproved() == 0)
-            {
-                windowProgress progress = windowProgress.getInstance();
-                progress.hideProgress();
-
-                View rootLayout = findViewById(R.id.rootLayout);
-                Snackbar snackbar = Snackbar
-                        .make(rootLayout, Html.fromHtml("<B>Unauthorized user</B><Br/>username or password incorrect"), Snackbar.LENGTH_LONG);
-                snackbar.show();
-            }
-            else
-            {
-                windowProgress progress = windowProgress.getInstance();
-                progress.hideProgress();
-
-                View rootLayout = findViewById(R.id.rootLayout);
-                Snackbar snackbar = Snackbar
-                        .make(rootLayout, Html.fromHtml("<B>Error</B><Br/>error occurred while fetching data from server"), Snackbar.LENGTH_LONG);
-                snackbar.show();
-                return;
-            }
         }
     }
 }

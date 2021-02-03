@@ -2,13 +2,13 @@ package et.com.cashier.fragments.trip;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.Color;
-import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
-import android.text.Html;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,31 +20,31 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.google.android.material.snackbar.Snackbar;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.annimon.stream.Stream;
+
 import et.com.cashier.R;
-import et.com.cashier.activities.windowLogin;
+import et.com.cashier.activities.windowDashboard;
+import et.com.cashier.activities.windowPassengerDetail;
 import et.com.cashier.activities.windowSeatArrangement;
-import et.com.cashier.activities.windowTripDetail;
 import et.com.cashier.adapters.RecyclerTouchListener;
+import et.com.cashier.buffer.PassengerInformation;
 import et.com.cashier.model.TripDate;
-import et.com.cashier.model.TripDetail;
 import et.com.cashier.network.retrofit.API;
 import et.com.cashier.network.retrofit.pojo.Trip;
 import et.com.cashier.network.retrofit.pojo.Trip_;
 import et.com.cashier.network.retrofit.post.TripSearchCriteria;
-import et.com.cashier.network.volley.HttpHandler;
-import et.com.cashier.network.volley.RequestPackage;
-import et.com.cashier.utilities.windowProgress;
+import et.com.cashier.activities.windowProgress;
+import et.com.cashier.utilities.EthiopianCalendar;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -61,31 +61,39 @@ public class fragment01 extends Fragment {
     private ListView listView;
     private static String urlGetTrips = "http://192.168.1.126:5055/bus/Client/GetTrips";
     private static String urlTrips = "http://192.168.1.155:8101/Trips/getTripsByDate";
+    private List<TripDate> dates;
+    private SimpleDateFormat tripDateFormat = new SimpleDateFormat("dd-MM-yyyy");
+
+    private Date selectedDate;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         View rootView = inflater.inflate(R.layout.fragment_fragment01, container, false);
         init(rootView);
         itemEventListener();
-        GetData();
-        GetTrips_(token, searchCriteria);
+        selectedDate = Calendar.getInstance().getTime();
+        GetData(selectedDate);
 
         return rootView;
     }
-    private void GetData()
+    private void GetData(Date fromDate)
     {
         Bundle bundle = getActivity().getIntent().getExtras();
         token = bundle.getString("token");
 
         searchCriteria = new TripSearchCriteria();
-        searchCriteria.setFromDate("12-04-2020");
+        searchCriteria.setFromDate(fromDate != null ? tripDateFormat.format(fromDate) : "12-04-2020");//tripDateFormat.format(Calendar.getInstance().getTime())
         searchCriteria.setToDate("");
         searchCriteria.setSource("");
         searchCriteria.setDestination("");
+
+        GetTrips_(token, searchCriteria);
     }
     private void GetTrips_(String token, TripSearchCriteria searchCriteria)
     {
@@ -150,15 +158,18 @@ public class fragment01 extends Fragment {
 
             rowView = inflater.inflate(R.layout.item_trips_list, null);
 
-            holder.busDesc = rowView.findViewById(R.id.txtBusDesc);
+            holder.availSeats = rowView.findViewById(R.id.txtAvailSeats_);
+            holder.availSubTrips = rowView.findViewById(R.id.txtAvailSubRoutes_);
             holder.tripDesc = rowView.findViewById(R.id.txtRouteDesc);
             holder.tripAmount = rowView.findViewById(R.id.txtTripUnitAmount );
             holder.tripDescTranslation = rowView.findViewById(R.id.txtRouteDescTranslation);
 
-            holder.busDesc.setText(trips.get(position).getBusName());
+            holder.availSeats.setText(String.valueOf(trips.get(position).getTotalSeats()));
+            holder.availSubTrips.setText(String.valueOf(trips.get(position).getSubTripsCount()));
             holder.tripDesc.setText(trips.get(position).getSource() + " - " + trips.get(position).getDestination());
             holder.tripDescTranslation.setText(trips.get(position).getSourceLocal() + " - " + trips.get(position).getDestinationLocal());
-            holder.tripAmount.setText("ETB " + trips.get(position).getPrice());
+            holder.tripAmount.setText(trips.get(position).getDiscount().equals(0.0) ? "ETB " + String.format("%.2f", trips.get(position).getPrice()) :
+                    "ETB " + String.format("%.2f", trips.get(position).getPrice()) + "(Dis: ETB " + String.format("%.2f", trips.get(position).getDiscount()) + ")"); //"ETB 750.0 (Dis: ETB 50.0)");
 
             return rowView;
         }
@@ -201,18 +212,15 @@ public class fragment01 extends Fragment {
             super.notifyDataSetChanged();
         }
     }
-    private void init(View rootView)
+    public void init(View rootView)
     {
         listView = rootView.findViewById(R.id.listTrips);
         recyclerView  = rootView.findViewById(R.id.recyclerDate);
         gridLayoutManager = new GridLayoutManager(getActivity(), 1, GridLayoutManager.HORIZONTAL, false);
         recyclerView .setLayoutManager(gridLayoutManager);
 
-        List<TripDate> dates = new ArrayList<>();
-        for(int i = 0; i < 11; i++)
-        {
-            dates.add(new TripDate("Wed, Jun " + i));
-        }
+        dates = setDate();
+
         dateAdapter = new DateAdapter(getActivity(), dates);
         recyclerView .setAdapter(dateAdapter);
         recyclerView .setNestedScrollingEnabled(false);
@@ -223,9 +231,13 @@ public class fragment01 extends Fragment {
             @Override
             public void onClick(View view, int position)
             {
-                TripDate tripDate = (TripDate)dateAdapter.getItem(position);
+                TripDate date = dates.get(position);
+                Stream.of(dates).forEach(d -> d.setSelected(false));
+                date.setSelected(true);
+                dateAdapter.notifyDataSetChanged();
+                selectedDate = date.getGregorianDate();
+                GetData(selectedDate);
             }
-
             @Override
             public void onLongClick(View view, int position) {
 
@@ -247,13 +259,22 @@ public class fragment01 extends Fragment {
                 Intent intent = new Intent(getActivity(), windowSeatArrangement.class);
                 intent.putExtra("token", token);
                 intent.putExtra("tripCode", trip_.getTripCode());
+
+                intent.putExtra("selectedTrip", trip_);
+//                intent.putExtra("date", selectedDate);
+//                intent.putExtra("sourceEn", trip_.getSource());
+//                intent.putExtra("sourceAm", trip_.getSourceLocal());
+//                intent.putExtra("destinationEn", trip_.getDestination());
+//                intent.putExtra("destinationAm", trip_.getDestinationLocal());
+//                intent.putExtra("numberOfAvailableSeats", trip_.getAvailableSeats());
+
                 startActivity(intent);
             }
         });
     }
     private class Holder
     {
-        TextView busDesc, tripDesc, tripAmount, tripDescTranslation;
+        TextView availSeats, availSubTrips, tripDesc, tripAmount, tripDescTranslation;
     }
     public static class DateAdapter extends RecyclerView.Adapter<DateAdapter.vHolder>
     {
@@ -263,14 +284,14 @@ public class fragment01 extends Fragment {
 
         public static class vHolder extends RecyclerView.ViewHolder
         {
-            TextView title, subTitle;
-            ImageView imageView;
+            TextView firstRow, secondRow, thirdRow;
+            View rowLine;
             public vHolder(View v)
             {
                 super(v);
-                title = v.findViewById(R.id.txtTitle);
-                subTitle = v.findViewById(R.id.txtSubTitle);
-                imageView = v.findViewById(R.id.imgTic);
+                firstRow = v.findViewById(R.id.txtFirstRow);
+                secondRow = v.findViewById(R.id.txtSecondRow);
+                rowLine = v.findViewById(R.id.rowLine);
             }
         }
 
@@ -289,30 +310,33 @@ public class fragment01 extends Fragment {
         @Override
         public void onBindViewHolder(DateAdapter.vHolder holder, final int position)
         {
-            holder.title.setText(tripDates.get(position).getDescription());
-            holder.subTitle.setText("subtitle");
-            holder.imageView.setOnClickListener(new View.OnClickListener()
-            {
-                @Override
-                public void onClick(View view)
-                {
-                    row_index = position;
-                    notifyDataSetChanged();
-                }
-            });
-
-            if(row_index == position)
-            {
-                holder.imageView.setBackgroundColor(Color.parseColor("#ffffff"));
-                holder.title.setTextColor(Color.parseColor("#567845"));
-                holder.subTitle.setTextColor(Color.parseColor("#567845"));
-            }
-            else
-            {
-                holder.imageView.setBackgroundColor(Color.parseColor("#ffffff"));
-                holder.title.setTextColor(Color.parseColor("#000000"));
-                holder.subTitle.setTextColor(Color.parseColor("#000000"));
-            }
+            holder.firstRow.setText(tripDates.get(position).getFirstRow());
+            holder.secondRow.setText(tripDates.get(position).getSecondRow());
+            holder.rowLine.setVisibility(tripDates.get(position).isSelected() ? View.VISIBLE : View.INVISIBLE);
+            holder.firstRow.setTextColor(tripDates.get(position).isSelected() ? Color.rgb(35,56,126) : Color.rgb( 128,128,128));
+            holder.secondRow.setTextColor(tripDates.get(position).isSelected() ? Color.rgb(35,56,126) : Color.rgb(128,128,128));
+//            holder.setOnClickListener(new View.OnClickListener()
+//            {
+//                @Override
+//                public void onClick(View view)
+//                {
+//                    row_index = position;
+//                    notifyDataSetChanged();
+//                }
+//            });
+//
+//            if(row_index == position)
+//            {
+//                holder.imageView.setBackgroundColor(Color.parseColor("#ffffff"));
+//                holder.title.setTextColor(Color.parseColor("#567845"));
+//                holder.subTitle.setTextColor(Color.parseColor("#567845"));
+//            }
+//            else
+//            {
+//                holder.imageView.setBackgroundColor(Color.parseColor("#ffffff"));
+//                holder.title.setTextColor(Color.parseColor("#000000"));
+//                holder.subTitle.setTextColor(Color.parseColor("#000000"));
+//            }
         }
 
         @Override
@@ -325,5 +349,47 @@ public class fragment01 extends Fragment {
         {
             return tripDates.get(position);
         }
+    }
+    private List<TripDate> setDate()
+    {
+        List<TripDate> tripDates = new ArrayList<>();
+        Calendar calendar = Calendar.getInstance();
+        TripDate tripDate;
+
+        tripDate = getTripDate(calendar);
+        tripDate.setSelected(true);
+        tripDates.add(tripDate);
+
+        for(int i = 1; i < 10; i++)
+        {
+            calendar.add(Calendar.DAY_OF_MONTH, 1);
+            tripDate = getTripDate(calendar);
+            tripDates.add(tripDate);
+        }
+        return tripDates;
+    }
+    private TripDate getTripDate(Calendar calendar){
+        TripDate tripDate = null;
+        if(calendar != null){
+            int year = calendar.get(Calendar.YEAR);
+            int month = calendar.get(Calendar.MONTH) + 1;
+            int date = calendar.get(Calendar.DAY_OF_MONTH);
+
+            EthiopianCalendar ethiopianCalendar = new EthiopianCalendar(year, month, date, 1723856);
+            int[] result = ethiopianCalendar.gregorianToEthiopic(year, month, date);
+
+            SimpleDateFormat sdf = new SimpleDateFormat("EEEE");
+            Date d = calendar.getTime();
+            String dayOfTheWeek = sdf.format(d);
+
+            String amMonth = windowDashboard.monthMapper(result[1]);
+            String amDayMapper = windowDashboard.dayMapper(dayOfTheWeek);
+            String ethiopianDate = String.format("%s ፡ %s %d ፡ %d", amDayMapper, amMonth, result[2], result[0]);
+
+            String[] split = ethiopianDate.split("፡");
+            tripDate = new TripDate(split[0] + ":" + split[1], split[2], split[0], calendar.getTime());
+            Log.i("Date ", ethiopianDate + ", " + DateFormat.getDateInstance(DateFormat.FULL).format(calendar.getTime()));
+        }
+        return tripDate;
     }
 }

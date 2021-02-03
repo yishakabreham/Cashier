@@ -7,9 +7,67 @@
     tools:context=".activities.windowTripDetail"
     android:background="@color/whiteSmock">
     <RelativeLayout
+        android:id="@+id/top"
+        android:layout_width="match_parent"
+        android:layout_height="75dp"
+        android:layout_alignParentTop="true"
+        android:background="@color/white">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/custom_relative_layout"
+            android:layout_margin="8dp">
+            <ImageView
+                android:id="@+id/imgSt"
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:src="@drawable/icon_route"
+                android:layout_margin="10dp"/>
+            <RelativeLayout
+                android:id="@+id/lbl"
+                android:layout_width="1.5dp"
+                android:layout_height="match_parent"
+                android:layout_toRightOf="@id/imgSt"
+                android:background="@color/white"/>
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/lbl"
+                android:layout_centerVertical="true">
+                <TextView
+                    android:id="@+id/txtEnRouteDesc"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/open_sans_bold"
+                    android:textAllCaps="true"
+                    android:textColor="@color/st_patrick_blue"
+                    android:text="Addis Ababa - Mekelle"
+                    android:textSize="11dp" />
+                <TextView
+                    android:id="@+id/txtAmRouteDesc"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/txtEnRouteDesc"
+                    android:layout_alignLeft="@id/txtEnRouteDesc"
+                    android:fontFamily="@font/open_sans_bold"
+                    android:textAllCaps="true"
+                    android:textColor="@color/celestial_blue"
+                    android:text="አዲስ አበባ - መቀለ"
+                    android:textSize="11dp" />
+            </RelativeLayout>
+            <ImageView
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:src="@drawable/icon_down_arrow"
+                android:layout_margin="22dp"
+                android:layout_alignParentRight="true"/>
+        </RelativeLayout>
+    </RelativeLayout>
+    <RelativeLayout
         android:id="@+id/rLinformation"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_below="@id/top">
         <RelativeLayout
             android:layout_width="7dp"
             android:layout_height="140dp"

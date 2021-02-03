@@ -1,4 +1,4 @@
-package et.com.cashier.utilities;
+package et.com.cashier.activities;
 
 import android.app.Dialog;
 import android.content.Context;

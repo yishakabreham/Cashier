@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:padding="8dp">
+        <RelativeLayout
+            android:id="@+id/colorHolder"
+            android:layout_width="2dp"
+            android:layout_height="match_parent"
+            android:background="@color/greenColor">
+        </RelativeLayout>
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/txtSRouteDesc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="TextView"
+            android:textSize="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:textColor="@color/st_patrick_blue"
+            android:fontFamily="@font/open_sans_regular"
+            android:textStyle="bold"
+            android:textAllCaps="true"
+            android:layout_alignParentLeft="true"/>
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/txtSRouteDescTranslation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="መቀለ - አዲስ አበባ"
+            android:textSize="10sp"
+            android:layout_below="@id/txtSRouteDesc"
+            android:layout_marginTop="5dp"
+            android:textColor="@color/celestial_blue"
+            android:textStyle="bold"
+            android:layout_marginRight="10dp"
+            android:fontFamily="@font/open_sans_regular"
+            android:layout_toLeftOf="@id/txtSTripUnitAmount"
+            android:layout_alignLeft="@id/txtSRouteDesc"/>
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/txtSTripUnitAmount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="ETB 750.0 (Dis: ETB 50.0)"
+            android:textSize="10sp"
+            android:textStyle="bold"
+            android:textColor="@color/greenColor"
+            android:layout_marginRight="10dp"
+            android:layout_alignBottom="@id/txtSRouteDescTranslation"
+            android:layout_alignParentRight="true"
+            android:fontFamily="@font/open_sans_regular"/>
+        <ImageView
+            android:id="@+id/imgSelected"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_alignBottom="@id/txtSRouteDesc"
+            android:layout_alignRight="@id/txtSTripUnitAmount"
+            android:src="@drawable/icon_check"/>
+    </RelativeLayout>
+</RelativeLayout>

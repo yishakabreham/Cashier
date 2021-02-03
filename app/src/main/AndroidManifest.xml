@@ -11,11 +11,21 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
-        <activity
-            android:name=".activities.windowMiddleTicket"
-            android:label="@string/title_activity_window_middle_ticket"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+        android:theme="@style/AppTheme"
+        android:usesCleartextTraffic="true">
+        <activity android:name=".activities.windowConfirmation"></activity>
+        <activity android:name=".activities.windowSubTrips" />
+
+        <receiver
+            android:name=".utilities.NetworkChangeReceiver"
+            android:label="NetworkChangeReceiver">
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+                <action android:name="android.net.wifi.WIFI_STATE_CHANGED" />
+            </intent-filter>
+        </receiver>
+
+        <activity android:name=".activities.windowSplashScreen" />
         <activity android:name=".MainActivity" />
         <activity android:name=".activities.windowTripDetail" />
         <activity android:name=".activities.windowPaymentOption" />

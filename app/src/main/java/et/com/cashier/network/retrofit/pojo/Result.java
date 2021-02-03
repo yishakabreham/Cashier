@@ -1,5 +1,6 @@
 package et.com.cashier.network.retrofit.pojo;
 
+import java.util.ArrayList;
 import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -24,6 +25,9 @@ public class Result {
     @SerializedName("busInfo")
     @Expose
     private BusInfo busInfo;
+    @SerializedName("subTrips")
+    @Expose
+    private ArrayList<SubTrip> subTrips;
 
     public Integer getSoldSeatsCount() {
         return soldSeatsCount;
@@ -71,5 +75,13 @@ public class Result {
 
     public void setBusInfo(BusInfo busInfo) {
         this.busInfo = busInfo;
+    }
+
+    public ArrayList<SubTrip> getSubTrips() {
+        return subTrips;
+    }
+
+    public void setSubTrips(ArrayList<SubTrip> subTrips) {
+        this.subTrips = subTrips;
     }
 }

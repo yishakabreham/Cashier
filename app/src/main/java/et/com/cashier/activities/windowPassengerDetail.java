@@ -6,9 +6,7 @@ import et.com.cashier.R;
 import et.com.cashier.network.retrofit.API;
 import et.com.cashier.network.retrofit.pojo.Consignee;
 import et.com.cashier.network.retrofit.pojo.Consignee_;
-import et.com.cashier.network.retrofit.pojo.SingleSeatArrangement;
 import et.com.cashier.network.retrofit.post.ItemCode;
-import et.com.cashier.utilities.windowProgress;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -31,6 +29,8 @@ public class windowPassengerDetail extends AppCompatActivity
     private String mobileNumber = null;
     private Consignee consignee;
 
+    private String firstName__, middleName__, lastName__, additionalInformation__, phoneNumber__;
+
     private EditText firstName, middleName, lastName, phoneNumber, additionalInformation, searchNumber;
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -45,6 +45,12 @@ public class windowPassengerDetail extends AppCompatActivity
     {
         Bundle bundle = getIntent().getExtras();
         token = bundle.getString("token");
+
+        firstName__ = bundle.getString("firstName");
+        middleName__ = bundle.getString("middleName");
+        lastName__ = bundle.getString("lastName");
+        additionalInformation__ = bundle.getString("additionalInformation");
+        phoneNumber__ = bundle.getString("mobile");
     }
 
     private void init()
@@ -62,6 +68,17 @@ public class windowPassengerDetail extends AppCompatActivity
 
         btnPassengerDetail = findViewById(R.id.btnPassengerDetail);
         btnSearch = findViewById(R.id.btnPassengerDetailSearchCustomer);
+
+        if(firstName__ != null && !firstName__.equals(""))
+            firstName.setText(firstName__);
+        if(middleName__ != null && !middleName__.equals(""))
+            middleName.setText(middleName__);
+        if(lastName__ != null && !lastName__.equals(""))
+            lastName.setText(lastName__);
+        if(additionalInformation__ != null && !additionalInformation__.equals(""))
+            additionalInformation.setText(additionalInformation__);
+        if(phoneNumber__ != null && !phoneNumber__.equals(""))
+            phoneNumber.setText(phoneNumber__);
 
         mobileNumber = searchNumber.getText().toString();
         ItemCode itemCode = new ItemCode();
@@ -112,9 +129,18 @@ public class windowPassengerDetail extends AppCompatActivity
         });
         btnPassengerDetail.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(windowPassengerDetail.this, windowPassengerInfoConfirmation.class);
-                startActivity(intent);
+            public void onClick(View v)
+            {
+                Intent intent = new Intent(windowPassengerDetail.this, windowSeatArrangement.class);
+
+                intent.putExtra("firstName", firstName.getText().toString());
+                intent.putExtra("middleName", middleName.getText().toString());
+                intent.putExtra("lastName", lastName.getText().toString());
+                intent.putExtra("additionalInformation", additionalInformation.getText().toString());
+                intent.putExtra("mobile", phoneNumber.getText().toString());
+
+                setResult(RESULT_OK, intent);
+                finish();
             }
         });
     }

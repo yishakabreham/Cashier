@@ -7,9 +7,82 @@
     tools:context=".activities.windowSeatArrangement"
     android:id="@+id/rootLayoutSeatArrangement">
     <RelativeLayout
+        android:id="@+id/top"
+        android:layout_width="match_parent"
+        android:layout_height="65dp"
+        android:layout_alignParentTop="true"
+        android:background="@color/white">
+        <RelativeLayout
+            android:id="@+id/rLSubTrips"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/custom_relative_layout"
+            android:layout_margin="8dp">
+            <ImageView
+                android:id="@+id/imgSt"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:src="@drawable/icon_route"
+                android:layout_margin="10dp"/>
+            <RelativeLayout
+                android:id="@+id/lbl"
+                android:layout_width="1.5dp"
+                android:layout_height="match_parent"
+                android:layout_toRightOf="@id/imgSt"
+                android:background="@color/white"/>
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/lbl"
+                android:layout_centerVertical="true"
+                android:layout_margin="10dp">
+                <TextView
+                    android:id="@+id/txtEnRouteDesc"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/open_sans_bold"
+                    android:textAllCaps="true"
+                    android:textColor="@color/st_patrick_blue"
+                    android:text="Addis Ababa - Mekelle"
+                    android:textSize="11dp" />
+                <TextView
+                    android:id="@+id/txtAmRouteDesc"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/txtEnRouteDesc"
+                    android:layout_alignLeft="@id/txtEnRouteDesc"
+                    android:fontFamily="@font/open_sans_bold"
+                    android:textAllCaps="true"
+                    android:textColor="@color/celestial_blue"
+                    android:text="አዲስ አበባ - መቀለ"
+                    android:textSize="11dp" />
+            </RelativeLayout>
+            <ImageView
+                android:id="@+id/imgDown"
+                android:layout_width="14dp"
+                android:layout_height="14dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="20dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginBottom="20dp"
+                android:src="@drawable/icon_down_arrow" />
+        </RelativeLayout>
+    </RelativeLayout>
+    <RelativeLayout
         android:id="@+id/rLinformation"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_below="@id/top">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_alignParentTop="true"
+            android:background="@drawable/dotted">
+        </RelativeLayout>
         <RelativeLayout
             android:layout_width="7dp"
             android:layout_height="140dp"
@@ -61,7 +134,7 @@
                 android:layout_height="wrap_content"
                 android:layout_toRightOf="@id/txtCi"
                 android:text="Tuesday October 27, 2020"
-                android:id="@+id/txtMyTicketCinema"
+                android:id="@+id/txtSeatDateEn"
                 android:textSize="10dp"
                 android:textAllCaps="true"
                 android:fontFamily="@font/open_sans_regular"
@@ -73,7 +146,7 @@
                 android:layout_height="wrap_content"
                 android:text="ቀን"
                 android:id="@+id/txtM"
-                android:layout_below="@id/txtMyTicketCinema"
+                android:layout_below="@id/txtSeatDateEn"
                 android:textSize="10dp"
                 android:fontFamily="@font/open_sans_regular"
                 android:textAllCaps="true"
@@ -86,21 +159,21 @@
                 android:layout_height="wrap_content"
                 android:layout_toRightOf="@id/txtM"
                 android:text="ማክሰኞ ጥቅምት 17 2013"
-                android:id="@+id/txtMyTicketTitle"
+                android:id="@+id/txtSeatDateAm"
                 android:textSize="10dp"
                 android:textAllCaps="true"
                 android:fontFamily="@font/open_sans_regular"
                 android:layout_alignBaseline="@id/txtM"
-                android:layout_alignLeft="@id/txtMyTicketCinema"
+                android:layout_alignLeft="@id/txtSeatDateEn"
                 android:textColor="@color/celestial_blue"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="source"
+                android:text="unit price (ETB)"
                 android:id="@+id/txtS"
                 android:textSize="10dp"
                 android:textStyle="bold"
-                android:layout_below="@id/txtMyTicketTitle"
+                android:layout_below="@id/txtSeatDateAm"
                 android:fontFamily="@font/open_sans_regular"
                 android:textColor="@color/st_patrick_blue"
                 android:layout_marginTop="15dp"
@@ -109,10 +182,10 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_toRightOf="@id/txtMyTicketTitle"
+                android:layout_toRightOf="@id/txtSeatDateAm"
                 android:layout_alignLeft="@id/txtS"
-                android:text="Addis Ababa"
-                android:id="@+id/txtMyTicketSeats"
+                android:text="785.00"
+                android:id="@+id/txtSeatUnitPriceEn"
                 android:layout_below="@id/txtS"
                 android:textSize="9dp"
                 android:fontFamily="@font/open_sans_regular"
@@ -121,7 +194,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Destination"
+                android:text="Discount (ETB)"
                 android:id="@+id/txtGT"
                 android:textSize="10dp"
                 android:textStyle="bold"
@@ -134,8 +207,8 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Mekelle"
-                android:id="@+id/txtMyTicketTotalAmount"
+                android:text="85.00"
+                android:id="@+id/txtSeatDiscountEn"
                 android:layout_below="@id/txtGT"
                 android:layout_alignRight="@id/txtGT"
                 android:textSize="9dp"
@@ -146,29 +219,29 @@
                 android:id="@+id/txtST"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/txtMyTicketSeats"
+                android:layout_below="@id/txtSeatUnitPriceEn"
                 android:layout_alignLeft="@id/txtM"
                 android:layout_marginTop="3dp"
                 android:fontFamily="@font/open_sans_regular"
-                android:text="መነሻ"
+                android:text="ዋጋ (በብር)"
                 android:textAllCaps="true"
                 android:textColor="@color/st_patrick_blue"
                 android:textSize="10dp"
                 android:textStyle="bold" />
             <TextView
-                android:id="@+id/txtMyTicketStartTime"
+                android:id="@+id/txtSeatUnitPriceAm"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignLeft="@+id/txtST"
                 android:layout_below="@+id/txtST"
-                android:text="አዲስ አበባ"
+                android:text="785.00"
                 android:textSize="9dp"
                 android:fontFamily="@font/open_sans_regular"
                 android:textColor="@color/celestial_blue"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="መድረሻ"
+                android:text="ቅናሽ (በብር)"
                 android:id="@+id/txtET"
                 android:textSize="10dp"
                 android:fontFamily="@font/open_sans_regular"
@@ -179,12 +252,12 @@
                 android:layout_alignParentRight="true"
                 android:layout_marginRight="10dp"/>
             <TextView
-                android:id="@+id/txtMyTicketEndTime"
+                android:id="@+id/txtSeatDiscountAm"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignRight="@+id/txtET"
                 android:layout_below="@+id/txtET"
-                android:text="መቀለ"
+                android:text="85.00"
                 android:textSize="9dp"
                 android:fontFamily="@font/open_sans_regular"
                 android:textColor="@color/celestial_blue"/>
@@ -192,7 +265,7 @@
                 android:id="@+id/txtSD"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/txtMyTicketStartTime"
+                android:layout_below="@id/txtSeatUnitPriceAm"
                 android:layout_alignLeft="@id/txtM"
                 android:layout_marginTop="3dp"
                 android:fontFamily="@font/open_sans_regular"
@@ -202,7 +275,7 @@
                 android:textSize="10dp"
                 android:textStyle="bold" />
             <TextView
-                android:id="@+id/txtMyTicketShowDate"
+                android:id="@+id/txtSeatAvailableEn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignLeft="@+id/txtSD"
@@ -225,7 +298,7 @@
                 android:layout_alignParentRight="true"
                 android:layout_marginRight="10dp"/>
             <TextView
-                android:id="@+id/txtMyTicketStatus"
+                android:id="@+id/txtSeatAvailableAm"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignRight="@+id/txtET"
@@ -250,26 +323,13 @@
                 android:padding="1dp" />
         </RelativeLayout>
     </RelativeLayout>
-    <TextView
-        android:id="@+id/staticT"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Seat Arrangement"
-        android:layout_centerHorizontal="true"
-        android:fontFamily="@font/open_sans_regular"
-        android:textColor="@color/st_patrick_blue"
-        android:layout_marginTop="10dp"
-        android:textSize="11dp"
-        android:textAllCaps="true"
-        android:textStyle="bold"
-        android:layout_below="@id/rLinformation"/>
     <RelativeLayout
         android:id="@+id/arrangement"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/staticT"
+        android:layout_below="@id/rLinformation"
         android:background="#aaa9"
-        android:layout_marginTop="10dp">
+        android:layout_marginTop="2dp">
         <HorizontalScrollView
             android:id="@+id/hScroll"
             android:layout_width="match_parent"
@@ -292,48 +352,44 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/arrangement"
-        android:layout_margin="10dp">
+        android:layout_margin="5dp">
+<!--        android:layout_above="@id/rLB">-->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/ticketRecycler"
             android:layout_width="match_parent"
-            android:layout_height="45dp"
+            android:layout_height="match_parent"
             android:layout_alignParentTop="true"
             android:overScrollMode="never"/>
     </RelativeLayout>
-    <RelativeLayout
-        android:id="@+id/RLPrice"
-        android:layout_width="match_parent"
+<!--    <RelativeLayout-->
+<!--        android:id="@+id/rLB"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_alignParentBottom="true">-->
+<!--        <Button-->
+<!--            android:id="@+id/btnTotalPrice"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_centerHorizontal="true"-->
+<!--            android:layout_marginBottom="10dp"-->
+<!--            android:layout_marginLeft="7dp"-->
+<!--            android:layout_marginRight="7dp"-->
+<!--            android:layout_marginTop="5dp"-->
+<!--            android:background="@color/st_patrick_blue"-->
+<!--            android:textColor="@color/white"-->
+<!--            android:text="to payment"-->
+<!--            android:fontFamily="@font/open_sans_regular"/>-->
+<!--    </RelativeLayout>-->
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/btnContinue"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/RL"
-        android:layout_margin="10dp">
-        <TextView
-            android:id="@+id/totPrice"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Total Price: ETB 1600.00"
-            android:layout_centerHorizontal="true"
-            android:fontFamily="@font/open_sans_regular"
-            android:textColor="@color/st_patrick_blue"
-            android:textStyle="bold"
-            android:textAllCaps="true"
-            android:textSize="10dp"/>
-    </RelativeLayout>
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true">
-        <Button
-            android:id="@+id/btnTotalPrice"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="10dp"
-            android:layout_marginLeft="7dp"
-            android:layout_marginRight="7dp"
-            android:layout_marginTop="5dp"
-            android:background="@color/st_patrick_blue"
-            android:textColor="@color/white"
-            android:text="to payment"
-            android:fontFamily="@font/open_sans_regular"/>
-    </RelativeLayout>
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="16dp"
+        android:contentDescription=""
+        app:elevation="12dp"
+        app:borderWidth="0dp"
+        app:fabSize="normal"
+        app:srcCompat="@drawable/icon_invoice"/>
 </RelativeLayout>

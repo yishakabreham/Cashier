@@ -1,12 +1,15 @@
 package et.com.cashier.network.retrofit.pojo;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import java.io.Serializable;
+import et.com.cashier.model.Company;
 
-public class Trip_ implements Serializable {
-
+public class SubTrip implements Parcelable
+{
     @SerializedName("tripCode")
     @Expose
     private String tripCode;
@@ -22,31 +25,24 @@ public class Trip_ implements Serializable {
     @SerializedName("discount")
     @Expose
     private Double discount;
-    @SerializedName("busName")
-    @Expose
-    private String busName;
-    @SerializedName("date")
-    @Expose
-    private String date;
-    @SerializedName("availableSeats")
-    @Expose
-    private Integer availableSeats;
-    @SerializedName("isExpired")
-    @Expose
-    private Boolean isExpired;
-    @SerializedName("totalSeats")
-    @Expose
-    private Integer totalSeats;
     @SerializedName("sourceLocal")
     @Expose
     private String sourceLocal;
     @SerializedName("destinationLocal")
     @Expose
     private String destinationLocal;
-    @SerializedName("subTripsCount")
-    @Expose
-    private int subTripsCount;
 
+    public SubTrip(){}
+    SubTrip(Parcel in)
+    {
+        tripCode = in.readString();
+        source = in.readString();
+        destination = in.readString();
+        price = in.readDouble();
+        discount = in.readDouble();
+        sourceLocal = in.readString();
+        destinationLocal = in.readString();
+    }
     public String getTripCode() {
         return tripCode;
     }
@@ -87,46 +83,6 @@ public class Trip_ implements Serializable {
         this.discount = discount;
     }
 
-    public String getBusName() {
-        return busName;
-    }
-
-    public void setBusName(String busName) {
-        this.busName = busName;
-    }
-
-    public String getDate() {
-        return date;
-    }
-
-    public void setDate(String date) {
-        this.date = date;
-    }
-
-    public Integer getAvailableSeats() {
-        return availableSeats;
-    }
-
-    public void setAvailableSeats(Integer availableSeats) {
-        this.availableSeats = availableSeats;
-    }
-
-    public Boolean getIsExpired() {
-        return isExpired;
-    }
-
-    public void setIsExpired(Boolean isExpired) {
-        this.isExpired = isExpired;
-    }
-
-    public Integer getTotalSeats() {
-        return totalSeats;
-    }
-
-    public void setTotalSeats(Integer totalSeats) {
-        this.totalSeats = totalSeats;
-    }
-
     public String getSourceLocal() {
         return sourceLocal;
     }
@@ -143,11 +99,28 @@ public class Trip_ implements Serializable {
         this.destinationLocal = destinationLocal;
     }
 
-    public int getSubTripsCount() {
-        return subTripsCount;
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
-    public void setSubTripsCount(int subTripsCount) {
-        this.subTripsCount = subTripsCount;
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(tripCode);
+        dest.writeString(source);
+        dest.writeString(destination);
+        dest.writeDouble(price);
+        dest.writeDouble(discount);
+        dest.writeString(sourceLocal);
+        dest.writeString(destinationLocal);
     }
+    public static final Parcelable.Creator<SubTrip> CREATOR = new Parcelable.Creator<SubTrip>() {
+        public SubTrip createFromParcel(Parcel in) {
+            return new SubTrip(in);
+        }
+
+        public SubTrip[] newArray(int size) {
+            return new SubTrip[size];
+        }
+    };
 }

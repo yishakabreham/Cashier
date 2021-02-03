@@ -1,52 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="100dp"
-    android:layout_height="45dp"
-    android:layout_margin="5dp">
+    android:layout_width="match_parent"
+    android:layout_height="50dp"
+    android:layout_margin="2dp"
+    android:id="@+id/rootLayout__">
     <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:id="@+id/ticketL"
+        android:layout_width="100dp"
+        android:layout_height="50dp">
         <RelativeLayout
-            android:id="@+id/left"
-            android:layout_width="60dp"
-            android:layout_height="match_parent"
-            android:background="@color/st_patrick_blue">
-            <View
-                android:layout_width="0.75dp"
-                android:layout_height="match_parent"
-                android:background="@drawable/custom_dashed_line"
-                android:layerType="software"
-                android:layout_alignParentRight="true"/>
+            android:id="@+id/rLTicket"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
             <RelativeLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true">
-                <TextView
-                    android:id="@+id/txtU"
+                android:id="@+id/left"
+                android:layout_width="50dp"
+                android:layout_height="match_parent"
+                android:background="@color/st_patrick_blue">
+                <View
+                    android:layout_width="0.75dp"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/custom_dashed_line"
+                    android:layerType="software"
+                    android:layout_alignParentRight="true"/>
+                <RelativeLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Price"
-                    android:textColor="@color/white"
-                    android:textSize="6sp"
-                    android:layout_marginLeft="3dp"/>
-                <TextView
-                    android:id="@+id/txtUPrice"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="800.00"
-                    android:textColor="@color/white"
-                    android:textSize="9sp"
-                    android:layout_below="@id/txtU"
-                    android:layout_marginLeft="3dp"/>
+                    android:layout_centerVertical="true">
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/icon_qr_code"
+                        android:padding="10dp"/>
+                </RelativeLayout>
             </RelativeLayout>
-        </RelativeLayout>
-        <RelativeLayout
-            android:id="@+id/right"
-            android:layout_width="20dp"
-            android:layout_height="match_parent"
-            android:layout_toRightOf="@id/left"
-            android:background="@color/st_patrick_blue">
+            <RelativeLayout
+                android:id="@+id/right"
+                android:layout_width="30dp"
+                android:layout_height="match_parent"
+                android:layout_toRightOf="@id/left"
+                android:background="@color/st_patrick_blue">
                 <TextView
                     android:id="@+id/txtSeatName"
                     android:layout_width="wrap_content"
@@ -58,22 +52,100 @@
                     android:layout_centerVertical="true"
                     android:layout_centerHorizontal="true"
                     android:fontFamily="@font/open_sans_regular"/>
-        </RelativeLayout>
-        <RelativeLayout
-            android:id="@+id/barcode"
-            android:layout_width="18dp"
-            android:layout_height="match_parent"
-            android:layout_toRightOf="@id/right">
-            <ImageView
-                android:layout_width="match_parent"
+            </RelativeLayout>
+            <RelativeLayout
+                android:id="@+id/barcode"
+                android:layout_width="18dp"
                 android:layout_height="match_parent"
-                android:src="@drawable/barcode"/>
+                android:layout_toRightOf="@id/right">
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/barcode"/>
+            </RelativeLayout>
+            <RelativeLayout
+                android:layout_width="2dp"
+                android:layout_height="match_parent"
+                android:layout_toRightOf="@id/barcode"
+                android:background="@color/redColor">
+            </RelativeLayout>
         </RelativeLayout>
-        <RelativeLayout
-            android:layout_width="2dp"
-            android:layout_height="match_parent"
-            android:layout_toRightOf="@id/barcode"
-            android:background="@color/redColor">
-        </RelativeLayout>
+    </RelativeLayout>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_toRightOf="@id/ticketL"
+        android:gravity="center">
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/txtSRouteDesc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Addis Ababa - Mekelle"
+            android:textSize="10dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="10dp"
+            android:textColor="@color/st_patrick_blue"
+            android:fontFamily="@font/open_sans_regular"
+            android:textStyle="bold"
+            android:textAllCaps="true"
+            android:layout_alignParentLeft="true"/>
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/txtSRouteDescTranslation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="መቀለ - አዲስ አበባ"
+            android:textSize="10sp"
+            android:layout_below="@id/txtSRouteDesc"
+            android:textColor="@color/celestial_blue"
+            android:textStyle="bold"
+            android:layout_marginRight="10dp"
+            android:fontFamily="@font/open_sans_regular"
+            android:layout_toLeftOf="@id/txtSTripUnitAmount"
+            android:layout_alignLeft="@id/txtSRouteDesc"/>
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/txtSTripUnitAmount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="ETB 750.0 (Dis: ETB 50.0)"
+            android:textSize="10sp"
+            android:textStyle="bold"
+            android:textColor="@color/greenColor"
+            android:layout_marginRight="2dp"
+            android:layout_alignBottom="@id/txtSRouteDescTranslation"
+            android:layout_alignParentRight="true"
+            android:fontFamily="@font/open_sans_regular"/>
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/txtSPassengerName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Yishak Abreham"
+            android:textSize="9sp"
+            android:layout_below="@id/txtSRouteDescTranslation"
+            android:layout_marginTop="5dp"
+            android:textColor="@color/celestial_blue"
+            android:textStyle="bold"
+            android:layout_marginRight="10dp"
+            android:fontFamily="@font/open_sans_regular"
+            android:layout_toLeftOf="@id/txtSTripUnitAmount"
+            android:layout_alignLeft="@id/txtSRouteDesc"
+            android:textAllCaps="true"/>
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/txtSPassengerPhone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="+251914569653"
+            android:textSize="9sp"
+            android:textStyle="bold"
+            android:textColor="@color/celestial_blue"
+            android:layout_marginRight="2dp"
+            android:layout_alignBottom="@id/txtSPassengerName"
+            android:layout_alignParentRight="true"
+            android:fontFamily="@font/open_sans_regular"/>
+        <ImageView
+            android:id="@+id/imgValidated"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_alignBottom="@id/txtSRouteDesc"
+            android:layout_alignRight="@id/txtSTripUnitAmount" />
     </RelativeLayout>
 </RelativeLayout>

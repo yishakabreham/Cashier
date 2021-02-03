@@ -14,19 +14,19 @@
             android:text="SN"
             android:fontFamily="@font/open_sans_regular"
             android:textColor="@color/st_patrick_blue"
-            android:textSize="9dp"
+            android:textSize="8dp"
             android:padding="3dp"
-            android:layout_marginLeft="8dp"/>
+            android:layout_marginLeft="8dp" />
         <TextView
             android:id="@+id/todayRoute"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_toRightOf="@id/todaySN"
-            android:layout_marginLeft="15dp"
-            android:text="Addis Ababa - Mekelle"
+            android:layout_marginLeft="5dp"
+            android:text="Addis Ababa - Mekelle (መቀለ - አዲስ አበባ)"
             android:fontFamily="@font/open_sans_regular"
             android:textColor="@color/st_patrick_blue"
-            android:textSize="9dp"
+            android:textSize="8dp"
             android:textAllCaps="true"
             android:padding="3dp"/>
         <TextView
@@ -34,12 +34,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:text="ETB 610.00"
+            android:text="ETB 610.00 (Discount: ETB 50)"
             android:fontFamily="@font/open_sans_regular"
             android:textColor="@color/st_patrick_blue"
-            android:textSize="9dp"
+            android:textSize="8.5dp"
             android:textAllCaps="true"
             android:padding="3dp"
-            android:layout_marginRight="10dp"/>
+            android:layout_marginRight="8dp"
+            android:layout_alignBottom="@id/todayRoute"/>
     </RelativeLayout>
 </RelativeLayout>

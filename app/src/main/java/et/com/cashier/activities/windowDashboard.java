@@ -6,7 +6,10 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import et.com.cashier.R;
 import et.com.cashier.adapters.RecyclerTouchListener;
+import et.com.cashier.fragments.trip.fragment01;
 import et.com.cashier.model.Company;
+import et.com.cashier.network.retrofit.pojo.Trip;
+import et.com.cashier.network.retrofit.pojo.Trip_;
 import et.com.cashier.network.retrofit.pojo.User;
 import et.com.cashier.network.retrofit.API;
 import et.com.cashier.network.retrofit.post.TripSearchCriteria;
@@ -22,7 +25,10 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -49,6 +55,12 @@ public class windowDashboard extends AppCompatActivity
 
     private ListView listViewTrips;
     private TextView dailyTripCount;
+
+    private Trip trip;
+    private TripSearchCriteria searchCriteria;
+    private Date selectedDate;
+    private SimpleDateFormat tripDateFormat = new SimpleDateFormat("dd-MM-yyyy");
+
     private String[] bodyTitle =
             {
                     "Book a Ticket",
@@ -76,19 +88,22 @@ public class windowDashboard extends AppCompatActivity
                     R.drawable.icon_log_out,
                     R.drawable.icon_exit
             };
-    private String[] routes = {"Addis Ababa - Mekelle", "Addis Ababa - Hawassa", "Addis Ababa - Jimma", "Addis Ababa - Dessie", "Addis Ababa - Shire", "Addis Ababa - Bahirdar", "Addis Ababa - Harar"};
-
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_window_dashboard);
 
+        final windowProgress progress = windowProgress.getInstance();
+        progress.showProgress(windowDashboard.this, "Getting things ready", false);
+
         initializeComponents();
         setDate();
         getData();
         init();
         listeners();
+
+        progress.hideProgress();
     }
     private void initializeComponents()
     {
@@ -152,21 +167,14 @@ public class windowDashboard extends AppCompatActivity
         recyclerViewBody.setAdapter(adapterBody);
         recyclerViewBody.setNestedScrollingEnabled(false);
 
-        ArrayList<TodayTrips> trips = new ArrayList();
+        selectedDate = Calendar.getInstance().getTime();
+        searchCriteria = new TripSearchCriteria();
+        searchCriteria.setFromDate(selectedDate != null ? tripDateFormat.format(selectedDate) : "12-04-2020");
+        searchCriteria.setToDate("");
+        searchCriteria.setSource("");
+        searchCriteria.setDestination("");
 
-        for(int i = 0; i < routes.length; i++)
-        {
-            TodayTrips todayTrips = new TodayTrips();
-            todayTrips.setSn(String.valueOf(i + 1));
-            todayTrips.setRoute(routes[i]);
-            todayTrips.setUnitPrice("ETB " + (150 * (i + 1)));
-
-            trips.add(todayTrips);
-        }
-        TodayTripsAdapter adapter = new TodayTripsAdapter(this, trips);
-        listViewTrips.setAdapter(adapter);
-
-        dailyTripCount.setText("Total " + trips.size() + " Trips");
+        GetTrips_(token, searchCriteria);
     }
     private void listeners()
     {
@@ -244,50 +252,6 @@ public class windowDashboard extends AppCompatActivity
     {
         TextView sn, route, price;
     }
-    public class TodayTripsAdapter extends BaseAdapter
-    {
-        private Context context;
-        private LayoutInflater inflater;
-        private List<TodayTrips> trips;
-
-        public TodayTripsAdapter(Context context, List<TodayTrips> trips)
-        {
-            this.context = context;
-            this.trips = trips;
-
-            inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        }
-        @Override
-        public int getCount() {
-            return trips.size();
-        }
-        @Override
-        public Object getItem(int position) {
-            return trips.get(position);
-        }
-        @Override
-        public long getItemId(int i) {
-            return 0;
-        }
-        @Override
-        public View getView(int i, View view, ViewGroup viewGroup)
-        {
-            Holder holder = new Holder();
-            View rowView;
-
-            rowView = inflater.inflate(R.layout.item_today_trips, null);
-
-            holder.sn = rowView.findViewById(R.id.todaySN);
-            holder.route = rowView.findViewById(R.id.todayRoute);
-            holder.price = rowView.findViewById(R.id.todayPrice);
-
-            holder.sn.setText(trips.get(i).getSn());
-            holder.route.setText(trips.get(i).getRoute());
-            holder.price.setText(trips.get(i).getUnitPrice());
-
-            return rowView;
-        }
-    }
     class DashBoardItem
     {
         private String title;
@@ -318,37 +282,7 @@ public class windowDashboard extends AppCompatActivity
             this.icon = icon;
         }
     }
-    class TodayTrips
-    {
-        private String sn;
-        private String route;
-        private  String unitPrice;
-
-        public String getSn() {
-            return sn;
-        }
-
-        public void setSn(String sn) {
-            this.sn = sn;
-        }
-
-        public String getRoute() {
-            return route;
-        }
-
-        public void setRoute(String route) {
-            this.route = route;
-        }
-
-        public String getUnitPrice() {
-            return unitPrice;
-        }
-
-        public void setUnitPrice(String unitPrice) {
-            this.unitPrice = unitPrice;
-        }
-    }
-    private String monthMapper(int index)
+    public static String monthMapper(int index)
     {
         String result = "";
         switch (index)
@@ -395,7 +329,7 @@ public class windowDashboard extends AppCompatActivity
         }
         return result;
     }
-    private String dayMapper(String index)
+    public static String dayMapper(String index)
     {
         String result = "";
         switch (index) {
@@ -422,5 +356,124 @@ public class windowDashboard extends AppCompatActivity
                 break;
         }
         return result;
+    }
+    private void GetTrips_(String token, TripSearchCriteria searchCriteria)
+    {
+        API.tripList(token).getTrips(searchCriteria)
+                .enqueue(new Callback<Trip>() {
+                    @Override
+                    public void onResponse(Call<Trip> call, Response<Trip> response)
+                    {
+                        if(response.isSuccessful() && response.code() == 200)
+                        {
+                            trip = response.body();
+                            inflateList(trip.getTrips());
+                        }
+                        else
+                        {
+
+                        }
+                    }
+                    @Override
+                    public void onFailure(Call<Trip> call, Throwable t) {
+
+                    }
+                });
+    }
+    private void inflateList(List<Trip_> trips)
+    {
+        TripAdapter adapter = new TripAdapter(windowDashboard.this, trips);
+        listViewTrips.setAdapter(adapter);
+
+        dailyTripCount.setText("Total " + trips.size() + " Trips");
+    }
+    private class Holder_
+    {
+        TextView sn, route, unitPrice;
+    }
+    private class TripAdapter extends BaseAdapter implements Filterable
+    {
+        private Context context;
+        private LayoutInflater inflater;
+
+        private List<Trip_> trips;
+        private List<Trip_> tripList;
+
+        public TripAdapter(Context context, List<Trip_> trips)
+        {
+            this.context = context;
+            this.trips = trips;
+
+            inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        }
+        @Override
+        public int getCount() {
+            return trips.size();
+        }
+        @Override
+        public Object getItem(int position) {
+            return trips.get(position);
+        }
+        @Override
+        public long getItemId(int position) {
+            return position;
+        }
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent)
+        {
+            Holder_ holder = new Holder_();
+            View rowView;
+
+            rowView = inflater.inflate(R.layout.item_today_trips, null);
+
+            holder.sn = rowView.findViewById(R.id.todaySN);
+            holder.route = rowView.findViewById(R.id.todayRoute);
+            holder.unitPrice = rowView.findViewById(R.id.todayPrice);
+
+            holder.sn.setText(String.valueOf(position + 1));
+            holder.route.setText(trips.get(position).getSource() + " - " + trips.get(position).getDestination() +
+                    " (" + trips.get(position).getSourceLocal() + " - " + trips.get(position).getDestinationLocal() + ")");
+            holder.unitPrice.setText(String.valueOf(trips.get(position).getPrice()));
+
+            return rowView;
+        }
+        @Override
+        public Filter getFilter()
+        {
+            return new Filter() {
+
+                @Override
+                protected FilterResults performFiltering(CharSequence constraint) {
+                    final FilterResults oReturn = new FilterResults();
+                    final ArrayList<Trip_> results = new ArrayList<>();
+
+                    if(tripList == null)
+                        tripList = trips;
+                    if (constraint != null)
+                    {
+                        if (tripList != null && tripList.size() > 0) {
+                            for (final Trip_ g : tripList) {
+                                if (g.getSource().toLowerCase()
+                                        .contains(constraint.toString()))
+                                    results.add(g);
+                            }
+                        }
+                        oReturn.values = results;
+                    }
+                    return oReturn;
+                }
+
+                @SuppressWarnings("unchecked")
+                @Override
+                protected void publishResults(CharSequence constraint,
+                                              FilterResults results) {
+                    trips = (ArrayList<Trip_>) results.values;
+                    notifyDataSetChanged();
+                }
+            };
+        }
+        public void notifyDataSetChanged() {
+            super.notifyDataSetChanged();
+        }
     }
 }

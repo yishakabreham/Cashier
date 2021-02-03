@@ -1,37 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="80dp"
-    android:layout_height="40dp"
-    android:layout_marginLeft="7dp">
-    <ImageView
-        android:id="@+id/imgTic"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        app:srcCompat="@drawable/icn_ticket"
-        android:layout_alignParentLeft="true" />
+    android:id="@+id/parent"
+    android:layout_width="100dp"
+    android:layout_height="wrap_content"
+    android:paddingTop="10dp">
     <TextView
-        android:id="@+id/txtTitle"
+        android:id="@+id/txtFirstRow"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="TextView"
-        android:textSize="11sp"
-        android:textStyle="bold"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:fontFamily="@font/open_sans_regular"
-        android:textColor="@color/blueBlack"
-        android:layout_marginTop="5dp"/>
-    <TextView
-        android:id="@+id/txtSubTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/txtTitle"
-        android:layout_centerHorizontal="true"
-        android:text="TextView"
-        android:textColor="@color/blueBlackDark"
         android:textSize="10sp"
-        android:fontFamily="@font/open_sans_regular" />
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:fontFamily="@font/open_sans_bold"
+        android:textColor="@color/gray"
+        android:textStyle="bold"/>
+    <TextView
+        android:id="@+id/txtSecondRow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/txtFirstRow"
+        android:layout_centerHorizontal="true"
+        android:text="Text"
+        android:textColor="@color/gray"
+        android:textSize="10sp"
+        android:fontFamily="@font/open_sans_bold"
+        android:layout_marginTop="1dp" />
+    <View
+        android:id="@+id/rowLine"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@id/txtSecondRow"
+        android:layout_marginTop="5dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:background="@color/st_patrick_blue"
+        android:visibility="gone">
+    </View>
 </RelativeLayout>
