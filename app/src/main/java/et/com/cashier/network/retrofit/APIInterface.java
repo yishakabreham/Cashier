@@ -1,5 +1,10 @@
 package et.com.cashier.network.retrofit;
 
+import java.util.ArrayList;
+
+import et.com.cashier.model.transaction.BaseTransaction;
+import et.com.cashier.model.transaction.SaveResult;
+import et.com.cashier.model.transaction.VoucherBuffer;
 import et.com.cashier.network.retrofit.pojo.Configuration;
 import et.com.cashier.network.retrofit.pojo.Consignee;
 import et.com.cashier.network.retrofit.pojo.SingleSeatArrangement;
@@ -21,7 +26,9 @@ public interface APIInterface
     @POST("getTripSeatArrangement")
     Call<SingleSeatArrangement> getSeatArrangement(@Body ItemCode itemCode);
     @POST("getConfigurations")
-    Call<Configuration> getSystemConfigurations(@Body ItemCode itemCode);
+    Call<Configuration> getSystemConfigurations();
     @POST("getConsigneeByPhone")
     Call<Consignee> getConsigneeDetail(@Body ItemCode itemCode);
+    @POST("saveTransaction")
+    Call<SaveResult> saveTransaction(@Body BaseTransaction baseTransaction);
 }

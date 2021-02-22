@@ -93,4 +93,22 @@ public class API
         APIInterface api = retrofit.create(APIInterface.class);
         return api;
     }
+    public static APIInterface postTransaction(String token)
+    {
+        Retrofit retrofit = null;
+        TokenInterceptor interceptor = new TokenInterceptor(token);
+
+        OkHttpClient client = new OkHttpClient.Builder()
+                .addInterceptor(interceptor)
+                .build();
+
+        retrofit = new Retrofit.Builder()
+                .client(client)
+                .baseUrl("http://192.168.1.155:8101/Trips/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        APIInterface api = retrofit.create(APIInterface.class);
+        return api;
+    }
 }

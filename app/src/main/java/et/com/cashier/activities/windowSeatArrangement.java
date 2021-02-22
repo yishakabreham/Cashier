@@ -12,6 +12,7 @@ import et.com.cashier.adapters.SeatTicket;
 import et.com.cashier.buffer.PassengerInformation;
 import et.com.cashier.buffer.TicketBuffer;
 import et.com.cashier.buffer.TicketInfo;
+import et.com.cashier.model.transaction.TransactionElements;
 import et.com.cashier.network.retrofit.API;
 import et.com.cashier.network.retrofit.pojo.Result;
 import et.com.cashier.network.retrofit.pojo.SeatArrangement;
@@ -102,18 +103,25 @@ public class windowSeatArrangement extends AppCompatActivity implements View.OnC
 
     private TextView txtTripDescEn, txtTripDescAm;
     private TextView txtDateEn, txtDateAm;
-    private TextView txtUnitPriceEn, txtUnitPriceAm;
-    private TextView txtDiscountEn, txtDiscountAm;
-    private TextView txtAvailableSeatsEn, txtAvailableSeatsAm;
+    private TextView txtUnitPrice;
+    private TextView txtDiscount;
+    private TextView txtChildrenDiscount;
+    private TextView txtAvailableSeats;
+    private TextView txtSubRoutes;
+    private TextView txtChildrenTotal;
+    private TextView txtAdultTotal;
+    private TextView txtDepartureTime;
     private FloatingActionButton btnContinue;
 
     private SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss");
+    private SimpleDateFormat dTSdf = new SimpleDateFormat("hh:mm");
     private Trip_ trip_;
     private SubTrip parent;
     private SubTrip selectedSubTrip;
 
     private ArrayList<TicketInfo> ticketInfoList;
     private TicketInfo onProcessTicketInfo;
+    private ArrayList<TransactionElements> transactionElements;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -155,14 +163,14 @@ public class windowSeatArrangement extends AppCompatActivity implements View.OnC
         txtDateEn = findViewById(R.id.txtSeatDateEn);
         txtDateAm = findViewById(R.id.txtSeatDateAm);
 
-        txtUnitPriceEn = findViewById(R.id.txtSeatUnitPriceEn);
-        txtUnitPriceAm = findViewById(R.id.txtSeatUnitPriceAm);
-
-        txtDiscountEn = findViewById(R.id.txtSeatDiscountEn);
-        txtDiscountAm = findViewById(R.id.txtSeatDiscountAm);
-
-        txtAvailableSeatsEn = findViewById(R.id.txtSeatAvailableEn);
-        txtAvailableSeatsAm = findViewById(R.id.txtSeatAvailableAm);
+        txtUnitPrice = findViewById(R.id.txtUnitPrice);
+        txtDiscount = findViewById(R.id.txtDiscount);
+        txtAvailableSeats = findViewById(R.id.txtAvailSeats_);
+        txtSubRoutes = findViewById(R.id.txtAvailSubRoutes_);
+        txtChildrenDiscount = findViewById(R.id.txtChildrenDiscount);
+        txtChildrenTotal = findViewById(R.id.txtChildrenTotal);
+        txtAdultTotal = findViewById(R.id.txtAdultTotal);
+        txtDepartureTime = findViewById(R.id.txtDepartureTime);
 
         btnContinue = findViewById(R.id.btnContinue);
 
@@ -228,19 +236,28 @@ public class windowSeatArrangement extends AppCompatActivity implements View.OnC
         btnContinue.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(ticketInfoList == null || ticketInfoList.size() == 0){
+                if(ticketInfoList == null || ticketInfoList.size() == 0)
+                {
                     //Toast
-                }else {
+                }
+                else
+                {
                     Boolean inValid = Stream.of(ticketInfoList).anyMatch(t -> t.getPassenger() == null);
-                    if(inValid){
+                    if(inValid)
+                    {
                         Stream.of(ticketInfoList).forEach(t -> t.setFlag(t.getPassenger() == null ? -1 : 1));
                         ticketsAdapter.notifyDataSetChanged();
                     }
                     else
                     {
                         Intent intent = new Intent(windowSeatArrangement.this, windowConfirmation.class);
+
                         intent.putParcelableArrayListExtra("tickets", ticketInfoList);
+                        intent.putExtra("tripCode", tripCode);
+                        intent.putExtra("token", token);
+
                         startActivity(intent);
+                        finish();
                     }
                 }
             }
@@ -248,23 +265,31 @@ public class windowSeatArrangement extends AppCompatActivity implements View.OnC
 
         calculatePrice();
     }
-    private void GetData()
-    {
-        Bundle bundle = getIntent().getExtras();
-        token = bundle.getString("token");
-        tripCode = bundle.getString("tripCode");
+    private void GetData() {
+        try
+        {
+            Bundle bundle = getIntent().getExtras();
+            token = bundle.getString("token");
+            tripCode = bundle.getString("tripCode");
 
-        trip_ = (Trip_)bundle.getSerializable("selectedTrip");
-        txtTripDescEn.setText(trip_.getSource() + " - " + trip_.getDestination());
-        txtTripDescAm.setText(trip_.getSourceLocal() + " - " + trip_.getDestinationLocal());
+            trip_ = (Trip_) bundle.getSerializable("selectedTrip");
+            txtTripDescEn.setText(trip_.getSource() + " - " + trip_.getDestination());
+            txtTripDescAm.setText(trip_.getSourceLocal() + " - " + trip_.getDestinationLocal());
 
-        DateFormatter(trip_);
-        txtUnitPriceEn.setText(String.format("%.2f", trip_.getPrice()));
-        txtUnitPriceAm.setText(String.format("%.2f", trip_.getPrice()));
-        txtDiscountEn.setText(String.format("%.2f", trip_.getDiscount()));
-        txtDiscountAm.setText(String.format("%.2f", trip_.getDiscount()));
-        txtAvailableSeatsEn.setText(String.valueOf(trip_.getTotalSeats() - trip_.getAvailableSeats()));
-        txtAvailableSeatsAm.setText(String.valueOf(trip_.getTotalSeats() - trip_.getAvailableSeats()));
+            DateFormatter(trip_);
+            txtUnitPrice.setText(String.format("%.2f", trip_.getPrice()));
+            txtDiscount.setText(String.format("%.2f", trip_.getDiscount()));
+            txtChildrenDiscount.setText(String.format("%.2f", trip_.getDiscount()));
+            txtChildrenTotal.setText(String.format("%.2f", trip_.getDiscount()));
+            txtAdultTotal.setText(String.format("%.2f", trip_.getDiscount()));
+            txtAvailableSeats.setText(String.valueOf(trip_.getTotalSeats() - trip_.getAvailableSeats()));
+            txtSubRoutes.setText("0");
+            txtDepartureTime.setText(String.valueOf(dTSdf.parse(trip_.getDate())));
+        }
+        catch (Exception ex)
+        {
+
+        }
     }
     private void GetSeatArrangement_(String token, ItemCode itemCode)
     {
@@ -304,6 +329,7 @@ public class windowSeatArrangement extends AppCompatActivity implements View.OnC
         if(result.getSubTrips() != null && result.getSubTrips().size() > 0)
         {
             ArrayList<SubTrip> subTrips = result.getSubTrips();
+            txtSubRoutes.setText(String.valueOf(subTrips.size()));
 
             parent = new SubTrip();
             parent.setDestination(trip_.getDestination());
@@ -490,6 +516,7 @@ public class windowSeatArrangement extends AppCompatActivity implements View.OnC
         {
             if(resultCode == Activity.RESULT_OK)
             {
+                int code = data.getIntExtra("code", 0);
                 String firstName = data.getStringExtra("firstName");
                 String middleName = data.getStringExtra("middleName");
                 String lastName = data.getStringExtra("lastName");
@@ -500,6 +527,7 @@ public class windowSeatArrangement extends AppCompatActivity implements View.OnC
                 passengerInformation.setSeatCode(onProcessTicketInfo.getSeatCode());
                 passengerInformation.setSeatName(onProcessTicketInfo.getSeatName());
                 passengerInformation.setTripCode(tripCode);
+                passengerInformation.setCode(code);
                 passengerInformation.setFirstName(firstName);
                 passengerInformation.setMiddleName(middleName);
                 passengerInformation.setLastName(lastName);
@@ -534,10 +562,11 @@ public class windowSeatArrangement extends AppCompatActivity implements View.OnC
                     selectedSubTrip = subTrips.get(0);
                     txtTripDescEn.setText(selectedSubTrip.getSource() + " - " + selectedSubTrip.getDestination());
                     txtTripDescAm.setText(selectedSubTrip.getSourceLocal() + " - " + selectedSubTrip.getDestinationLocal());
-                    txtUnitPriceEn.setText(String.format("%.2f", selectedSubTrip.getPrice()));
-                    txtUnitPriceAm.setText(String.format("%.2f", selectedSubTrip.getPrice()));
-                    txtDiscountEn.setText(String.format("%.2f", selectedSubTrip.getDiscount()));
-                    txtDiscountAm.setText(String.format("%.2f", selectedSubTrip.getDiscount()));
+                    txtUnitPrice.setText(String.format("%.2f", selectedSubTrip.getPrice()));
+                    txtDiscount.setText(String.format("%.2f", selectedSubTrip.getDiscount()));
+                    txtChildrenDiscount.setText(String.format("%.2f", selectedSubTrip.getDiscount()));
+                    txtChildrenTotal.setText(String.format("%.2f", selectedSubTrip.getPrice()));
+                    txtAdultTotal.setText(String.format("%.2f", selectedSubTrip.getDiscount()));
                 }
                 else
                 {
@@ -705,7 +734,7 @@ public class windowSeatArrangement extends AppCompatActivity implements View.OnC
             if (type == 1)
             {
                 py.setOnClickListener(null);
-                py.setBackgroundResource(R.drawable.icon_sold_seat);
+                py.setBackgroundResource(R.drawable.icon_processing_seat);
             }
             else if (type == -1)
             {
@@ -727,7 +756,7 @@ public class windowSeatArrangement extends AppCompatActivity implements View.OnC
                         if (type == 1)
                         {
                             py.setOnClickListener(null);
-                            py.setBackgroundResource(R.drawable.icon_sold_seat);
+                            py.setBackgroundResource(R.drawable.icon_processing_seat);
                         }
                         else if (type == -1)
                         {
@@ -774,8 +803,7 @@ public class windowSeatArrangement extends AppCompatActivity implements View.OnC
             e.printStackTrace();
         }
     }
-    private void DateFormatter(Trip_ trip_)
-    {
+    private void DateFormatter(Trip_ trip_) {
         try {
             Calendar cal = Calendar.getInstance();
             cal.setTime(sdf.parse(trip_.getDate()));
@@ -797,9 +825,8 @@ public class windowSeatArrangement extends AppCompatActivity implements View.OnC
 
             txtDateEn.setText(DateFormat.getDateInstance(DateFormat.FULL).format(cal.getTime()));
             txtDateAm.setText(ethiopianDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
         }
-        catch (ParseException e) {
-        e.printStackTrace();
-    }
     }
 }

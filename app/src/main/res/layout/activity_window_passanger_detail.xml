@@ -79,10 +79,28 @@
                 </RelativeLayout>
             </RelativeLayout>
             <RelativeLayout
+                android:id="@+id/rLExpandableList"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/rlSearch"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/custom_relative_layout"
+                android:visibility="gone">
+                <ExpandableListView
+                    android:id="@+id/expandableListView"
+                    android:layout_height="match_parent"
+                    android:layout_width="match_parent"
+                    android:indicatorLeft="?android:attr/expandableListPreferredItemIndicatorLeft"
+                    android:divider="@android:color/darker_gray"
+                    android:dividerHeight="0.5dp" />
+            </RelativeLayout>
+            <RelativeLayout
                 android:id="@+id/rlTin"
                 android:layout_width="match_parent"
                 android:layout_height="80dp"
-                android:layout_below="@id/rlSearch">
+                android:layout_below="@id/rLExpandableList">
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"

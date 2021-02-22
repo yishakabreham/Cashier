@@ -3,6 +3,8 @@ package et.com.cashier.activities;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import et.com.cashier.R;
+import et.com.cashier.adapters.ExpandableListAdapter;
+import et.com.cashier.buffer.PassengerInformation;
 import et.com.cashier.network.retrofit.API;
 import et.com.cashier.network.retrofit.pojo.Consignee;
 import et.com.cashier.network.retrofit.pojo.Consignee_;
@@ -17,9 +19,13 @@ import android.text.Html;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ExpandableListView;
+import android.widget.RelativeLayout;
 
 import com.google.android.material.snackbar.Snackbar;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class windowPassengerDetail extends AppCompatActivity
@@ -28,10 +34,21 @@ public class windowPassengerDetail extends AppCompatActivity
     private String token;
     private String mobileNumber = null;
     private Consignee consignee;
+    private ExpandableListView listView;
 
     private String firstName__, middleName__, lastName__, additionalInformation__, phoneNumber__;
 
     private EditText firstName, middleName, lastName, phoneNumber, additionalInformation, searchNumber;
+
+    ExpandableListAdapter expandableListAdapter;
+    ArrayList<String> expandableListTitle;
+    HashMap<String, List<Consignee_>> expandableListDetail;
+
+    private RelativeLayout listContainer;
+
+    int initialHeight;
+    private Consignee_ consignee_;
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -66,6 +83,9 @@ public class windowPassengerDetail extends AppCompatActivity
         additionalInformation = findViewById(R.id.txtOther);
         searchNumber = findViewById(R.id.txtSearch);
 
+        listContainer = findViewById(R.id.rLExpandableList);
+        listView = findViewById(R.id.expandableListView);
+
         btnPassengerDetail = findViewById(R.id.btnPassengerDetail);
         btnSearch = findViewById(R.id.btnPassengerDetailSearchCustomer);
 
@@ -83,11 +103,46 @@ public class windowPassengerDetail extends AppCompatActivity
         mobileNumber = searchNumber.getText().toString();
         ItemCode itemCode = new ItemCode();
         itemCode.setCode("0914569653");
+
+        initialHeight = listView.getMeasuredHeight();
+        listView.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
+            @Override
+            public void onGroupExpand(int groupPosition) {
+                initialHeight = initialHeight <= 0 ? listView.getMeasuredHeight() : initialHeight;
+                int height = 0;
+
+                int c = expandableListAdapter.getChildrenCount(0);
+
+                height += (listView.getDividerHeight() + (listView.getChildAt(0).getMeasuredHeight())) * c;
+
+                listView.getLayoutParams().height = initialHeight + height;
+            }
+        });
+        listView.setOnGroupCollapseListener(new ExpandableListView.OnGroupCollapseListener() {
+
+            @Override
+            public void onGroupCollapse(int groupPosition) {
+                listView.getLayoutParams().height = initialHeight;
+            }
+        });
+        listView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+            @Override
+            public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id)
+            {
+                consignee_ = (Consignee_)parent.getExpandableListAdapter().getChild (groupPosition, childPosition);
+                setFields(consignee_);
+                return false;
+            }
+        });
+
         btnSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 final windowProgress progress = windowProgress.getInstance();
                 progress.showProgress(windowPassengerDetail.this, "Getting Customer", false);
+                if(listContainer.getVisibility() == View.VISIBLE){
+                    listView.collapseGroup(0);
+                }
                 API.consigneeDetail(token).getConsigneeDetail(itemCode)
                         .enqueue(new Callback<Consignee>() {
                             @Override
@@ -101,16 +156,32 @@ public class windowPassengerDetail extends AppCompatActivity
                                         List<Consignee_> consignees_ = consignee.getConsignees();
                                         if(consignees_ != null && consignees_.size() > 0)
                                         {
-                                            Consignee_ consignee_ = consignees_.get(0);
-                                            firstName.setText(consignee_.getFirstName());
-                                            middleName.setText(consignee_.getMiddleName());
-                                            lastName.setText(consignee_.getLastName());
-                                            phoneNumber.setText(consignee_.getMobile());
-                                            additionalInformation.setText(String.valueOf(consignee_.getRemark()) != "null" ? String.valueOf(consignee_.getRemark()) : "");
+                                            if(consignees_.size() == 1)
+                                            {
+                                                listContainer.setVisibility(View.GONE);
+                                                Consignee_ consignee_ = consignees_.get(0);
+                                                setFields(consignee_);
+                                            }
+                                            else
+                                            {
+                                                listContainer.setVisibility(View.VISIBLE);
+                                                expandableListDetail = new HashMap<>();
+                                                expandableListDetail.put(consignees_.size() + " Records", consignees_);
+                                                expandableListTitle = new ArrayList<>(expandableListDetail.keySet());
+                                                expandableListAdapter = new ExpandableListAdapter(getApplicationContext(), expandableListTitle, expandableListDetail);
+                                                listView.setAdapter(expandableListAdapter);
+                                            }
+
+                                        }else {
+                                            listContainer.setVisibility(View.GONE);
+                                            //Toast no result
                                         }
                                     }
                                 }
+                                else
+                                {
 
+                                }
                                 progress.hideProgress();
                             }
 
@@ -133,6 +204,7 @@ public class windowPassengerDetail extends AppCompatActivity
             {
                 Intent intent = new Intent(windowPassengerDetail.this, windowSeatArrangement.class);
 
+                intent.putExtra("code", consignee_.getCode());
                 intent.putExtra("firstName", firstName.getText().toString());
                 intent.putExtra("middleName", middleName.getText().toString());
                 intent.putExtra("lastName", lastName.getText().toString());
@@ -143,5 +215,15 @@ public class windowPassengerDetail extends AppCompatActivity
                 finish();
             }
         });
+    }
+
+    private void setFields(Consignee_ consignee_){
+        if(consignee_ != null) {
+            firstName.setText(consignee_.getFirstName());
+            middleName.setText(consignee_.getMiddleName());
+            lastName.setText(consignee_.getLastName());
+            phoneNumber.setText(consignee_.getMobile());
+            additionalInformation.setText(String.valueOf(consignee_.getRemark()) != "null" ? String.valueOf(consignee_.getRemark()) : "");
+        }
     }
 }

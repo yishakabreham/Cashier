@@ -4,6 +4,9 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission. ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
     <application
         android:allowBackup="true"
@@ -25,16 +28,15 @@
             </intent-filter>
         </receiver>
 
-        <activity android:name=".activities.windowSplashScreen" />
+        <activity android:name=".activities.windowLogin" />
         <activity android:name=".MainActivity" />
         <activity android:name=".activities.windowTripDetail" />
         <activity android:name=".activities.windowPaymentOption" />
-        <activity android:name=".activities.windowPassengerInfoConfirmation" />
         <activity android:name=".activities.windowSeatArrangement" />
         <activity android:name=".activities.windowPassengerDetail" />
         <activity android:name=".activities.windowTrip" />
         <activity android:name=".activities.windowDashboard" />
-        <activity android:name=".activities.windowLogin">
+        <activity android:name=".activities.windowSplashScreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

@@ -103,19 +103,11 @@
             android:id="@+id/sideTwoRL">
         </RelativeLayout>
         <RelativeLayout
-            android:layout_width="0.6dp"
-            android:layout_height="140dp"
-            android:layout_alignParentRight="true"
-            android:background="#d3d3d3"
-            android:id="@+id/sideThreeRL"
-            android:layout_marginRight="60dp">
-        </RelativeLayout>
-        <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="140dp"
+            android:layout_toLeftOf="@id/sideTwoRL"
             android:layout_toRightOf="@id/sideRL"
-            android:layout_alignRight="@id/sideThreeRL"
-            android:layout_marginRight="1dp"
+            android:layout_marginRight="5dp"
             android:id="@+id/containerRL">
             <TextView
                 android:layout_width="wrap_content"
@@ -140,7 +132,8 @@
                 android:fontFamily="@font/open_sans_regular"
                 android:layout_alignBaseline="@id/txtCi"
                 android:layout_marginLeft="5dp"
-                android:textColor="@color/celestial_blue"/>
+                android:textColor="@color/celestial_blue"
+                android:textStyle="bold"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -165,11 +158,12 @@
                 android:fontFamily="@font/open_sans_regular"
                 android:layout_alignBaseline="@id/txtM"
                 android:layout_alignLeft="@id/txtSeatDateEn"
-                android:textColor="@color/celestial_blue"/>
+                android:textColor="@color/celestial_blue"
+                android:textStyle="bold"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="unit price (ETB)"
+                android:text="unit price / ዋጋ"
                 android:id="@+id/txtS"
                 android:textSize="10dp"
                 android:textStyle="bold"
@@ -185,51 +179,94 @@
                 android:layout_toRightOf="@id/txtSeatDateAm"
                 android:layout_alignLeft="@id/txtS"
                 android:text="785.00"
-                android:id="@+id/txtSeatUnitPriceEn"
+                android:id="@+id/txtUnitPrice"
                 android:layout_below="@id/txtS"
                 android:textSize="9dp"
                 android:fontFamily="@font/open_sans_regular"
-                android:textColor="@color/celestial_blue"
-                android:textAllCaps="true"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Discount (ETB)"
-                android:id="@+id/txtGT"
-                android:textSize="10dp"
-                android:textStyle="bold"
-                android:fontFamily="@font/open_sans_regular"
-                android:textColor="@color/st_patrick_blue"
-                android:layout_alignBottom="@id/txtS"
-                android:layout_alignParentRight="true"
+                android:textColor="@color/greenColor"
                 android:textAllCaps="true"
-                android:layout_marginRight="10dp"/>
-            <TextView
+                android:textStyle="bold"/>
+            <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="85.00"
-                android:id="@+id/txtSeatDiscountEn"
-                android:layout_below="@id/txtGT"
-                android:layout_alignRight="@id/txtGT"
-                android:textSize="9dp"
-                android:fontFamily="@font/open_sans_regular"
-                android:textColor="@color/celestial_blue"
-                android:textAllCaps="true"/>
+                android:layout_alignParentRight="true"
+                android:layout_alignTop="@id/txtS"
+                android:layout_alignBottom="@id/txtS">
+                <ImageView
+                    android:id="@+id/imgDT"
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:src="@drawable/icon_clock"
+                    android:layout_alignParentBottom="true"/>
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/txtDepartureTime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="11:00"
+                    android:textSize="10sp"
+                    android:textColor="@color/celestial_blue"
+                    android:fontFamily="@font/open_sans_regular"
+                    android:textStyle="bold"
+                    android:layout_toRightOf="@id/imgDT"
+                    android:layout_marginLeft="5dp"
+                    android:layout_alignParentBottom="true" />
+                <ImageView
+                    android:id="@+id/imgSeatIdeal"
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:src="@drawable/icon_seat"
+                    android:layout_alignParentBottom="true"
+                    android:layout_toRightOf="@id/txtDepartureTime"
+                    android:layout_marginLeft="15dp"/>
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/txtAvailSeats_"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="50"
+                    android:textSize="10sp"
+                    android:textColor="@color/celestial_blue"
+                    android:fontFamily="@font/open_sans_regular"
+                    android:textStyle="bold"
+                    android:layout_toRightOf="@id/imgSeatIdeal"
+                    android:layout_marginLeft="5dp"
+                    android:layout_alignParentBottom="true" />
+                <ImageView
+                    android:id="@+id/imgSeatIdeal1"
+                    android:layout_width="14dp"
+                    android:layout_height="14dp"
+                    android:src="@drawable/icon_route"
+                    android:layout_toRightOf="@id/txtAvailSeats_"
+                    android:layout_marginLeft="15dp"
+                    android:layout_alignParentBottom="true"/>
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/txtAvailSubRoutes_"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="5"
+                    android:textSize="10sp"
+                    android:textColor="@color/celestial_blue"
+                    android:fontFamily="@font/open_sans_regular"
+                    android:textStyle="bold"
+                    android:textAllCaps="true"
+                    android:layout_toRightOf="@id/imgSeatIdeal1"
+                    android:layout_marginLeft="5dp"
+                    android:layout_alignParentBottom="true" />
+            </RelativeLayout>
             <TextView
                 android:id="@+id/txtST"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/txtSeatUnitPriceEn"
+                android:layout_below="@id/txtUnitPrice"
                 android:layout_alignLeft="@id/txtM"
                 android:layout_marginTop="3dp"
                 android:fontFamily="@font/open_sans_regular"
-                android:text="ዋጋ (በብር)"
+                android:text="Discount / ቅናሽ"
                 android:textAllCaps="true"
                 android:textColor="@color/st_patrick_blue"
                 android:textSize="10dp"
                 android:textStyle="bold" />
             <TextView
-                android:id="@+id/txtSeatUnitPriceAm"
+                android:id="@+id/txtDiscount"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignLeft="@+id/txtST"
@@ -237,90 +274,85 @@
                 android:text="785.00"
                 android:textSize="9dp"
                 android:fontFamily="@font/open_sans_regular"
-                android:textColor="@color/celestial_blue"/>
+                android:textColor="@color/greenColor"
+                android:textStyle="bold"
+                android:layout_alignBottom="@id/txtChildrenDiscount"/>
             <TextView
+                android:id="@+id/txtCD"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="ቅናሽ (በብር)"
-                android:id="@+id/txtET"
-                android:textSize="10dp"
-                android:fontFamily="@font/open_sans_regular"
-                android:textStyle="bold"
-                android:textColor="@color/st_patrick_blue"
-                android:textAllCaps="true"
                 android:layout_alignBottom="@id/txtST"
                 android:layout_alignParentRight="true"
-                android:layout_marginRight="10dp"/>
-            <TextView
-                android:id="@+id/txtSeatDiscountAm"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignRight="@+id/txtET"
-                android:layout_below="@+id/txtET"
-                android:text="85.00"
-                android:textSize="9dp"
-                android:fontFamily="@font/open_sans_regular"
-                android:textColor="@color/celestial_blue"/>
-            <TextView
-                android:id="@+id/txtSD"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/txtSeatUnitPriceAm"
-                android:layout_alignLeft="@id/txtM"
                 android:layout_marginTop="3dp"
                 android:fontFamily="@font/open_sans_regular"
-                android:text="Number of available seats"
+                android:text="Children Discount / የህጻናት ቅናሽ"
                 android:textAllCaps="true"
                 android:textColor="@color/st_patrick_blue"
                 android:textSize="10dp"
                 android:textStyle="bold" />
             <TextView
-                android:id="@+id/txtSeatAvailableEn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignLeft="@+id/txtSD"
-                android:layout_below="@+id/txtSD"
-                android:text="50"
+                android:text="500.00"
+                android:id="@+id/txtChildrenDiscount"
                 android:textSize="9dp"
                 android:fontFamily="@font/open_sans_regular"
-                android:textColor="@color/celestial_blue"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="ያልተያዘ የወንበር ብዛት"
-                android:id="@+id/txtSTU"
-                android:textSize="10dp"
-                android:fontFamily="@font/open_sans_regular"
-                android:textStyle="bold"
-                android:textColor="@color/st_patrick_blue"
+                android:textColor="@color/greenColor"
                 android:textAllCaps="true"
-                android:layout_alignBottom="@id/txtSD"
+                android:layout_below="@id/txtCD"
                 android:layout_alignParentRight="true"
-                android:layout_marginRight="10dp"/>
+                android:textStyle="bold"/>
             <TextView
-                android:id="@+id/txtSeatAvailableAm"
+                android:id="@+id/txtTOT"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignRight="@+id/txtET"
-                android:layout_below="@+id/txtSTU"
-                android:text="50"
-                android:textSize="10dp"
+                android:layout_below="@id/txtChildrenDiscount"
+                android:layout_alignLeft="@id/txtM"
+                android:layout_marginTop="3dp"
                 android:fontFamily="@font/open_sans_regular"
-                android:textStyle="bold"
-                android:textColor="@color/celestial_blue"/>
-        </RelativeLayout>
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="140dp"
-            android:layout_toRightOf="@id/containerRL"
-            android:layout_alignRight="@id/sideTwoRL"
-            android:layout_marginRight="1dp">
-            <ImageView
+                android:text="Adult Price / የአዋቂዎች ዋጋ"
+                android:textAllCaps="true"
+                android:textColor="@color/st_patrick_blue"
+                android:textSize="10dp"
+                android:textStyle="bold" />
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/barcode"
-                android:layout_margin="4dp"
-                android:padding="1dp" />
+                android:text="500.00"
+                android:id="@+id/txtAdultTotal"
+                android:textSize="9dp"
+                android:fontFamily="@font/open_sans_regular"
+                android:textColor="@color/greenColor"
+                android:textAllCaps="true"
+                android:layout_below="@id/txtTOT"
+                android:layout_alignLeft="@+id/txtTOT"
+                android:textStyle="bold"
+                android:layout_alignBottom="@id/txtChildrenTotal"/>
+            <TextView
+                android:id="@+id/txtTOTAm"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/txtChildrenDiscount"
+                android:layout_alignParentRight="true"
+                android:layout_marginTop="3dp"
+                android:fontFamily="@font/open_sans_regular"
+                android:text="children Price / የህጻናት ዋጋ"
+                android:textAllCaps="true"
+                android:textColor="@color/st_patrick_blue"
+                android:textSize="10dp"
+                android:textStyle="bold" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="500.00"
+                android:id="@+id/txtChildrenTotal"
+                android:textSize="9dp"
+                android:fontFamily="@font/open_sans_regular"
+                android:textColor="@color/greenColor"
+                android:textAllCaps="true"
+                android:layout_alignParentRight="true"
+                android:layout_below="@id/txtTOTAm"
+                android:textStyle="bold"/>
         </RelativeLayout>
     </RelativeLayout>
     <RelativeLayout
@@ -361,25 +393,6 @@
             android:layout_alignParentTop="true"
             android:overScrollMode="never"/>
     </RelativeLayout>
-<!--    <RelativeLayout-->
-<!--        android:id="@+id/rLB"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_alignParentBottom="true">-->
-<!--        <Button-->
-<!--            android:id="@+id/btnTotalPrice"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_centerHorizontal="true"-->
-<!--            android:layout_marginBottom="10dp"-->
-<!--            android:layout_marginLeft="7dp"-->
-<!--            android:layout_marginRight="7dp"-->
-<!--            android:layout_marginTop="5dp"-->
-<!--            android:background="@color/st_patrick_blue"-->
-<!--            android:textColor="@color/white"-->
-<!--            android:text="to payment"-->
-<!--            android:fontFamily="@font/open_sans_regular"/>-->
-<!--    </RelativeLayout>-->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/btnContinue"
         android:layout_width="wrap_content"

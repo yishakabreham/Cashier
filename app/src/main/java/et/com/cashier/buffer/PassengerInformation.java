@@ -7,6 +7,7 @@ import et.com.cashier.network.retrofit.pojo.UserInformation;
 
 public class PassengerInformation implements Parcelable
 {
+    private int code;
     private String firstName;
     private String middleName;
     private String lastName;
@@ -20,6 +21,7 @@ public class PassengerInformation implements Parcelable
     public PassengerInformation(){}
     public PassengerInformation(Parcel in)
     {
+        code = in.readInt();
         firstName = in.readString();
         middleName = in.readString();
         lastName = in.readString();
@@ -110,6 +112,7 @@ public class PassengerInformation implements Parcelable
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(code);
         dest.writeString(firstName);
         dest.writeString(middleName);
         dest.writeString(lastName);
@@ -129,4 +132,12 @@ public class PassengerInformation implements Parcelable
             return new PassengerInformation[size];
         }
     };
+
+    public int getCode() {
+        return code;
+    }
+
+    public void setCode(int code) {
+        this.code = code;
+    }
 }

@@ -1,9 +1,67 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.windowSplashScreen">
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+    tools:context=".activities.windowSplashScreen"
+    android:id="@+id/splashRootLayout">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="100dp">
+            <ImageView
+                android:id="@+id/splashImage"
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:src="@drawable/icon_splash_logo"
+                android:layout_centerHorizontal="true" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/splashImage"
+                android:fontFamily="@font/open_sans_regular"
+                android:textColor="@color/st_patrick_blue"
+                android:text="CloudPOS"
+                android:textSize="20sp"
+                android:layout_centerHorizontal="true"
+                android:layout_margin="5dp"/>
+        </RelativeLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_margin="80dp">
+            <ProgressBar
+                android:id="@+id/splashProgressBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_margin="10dp"/>
+            <TextView
+                android:id="@+id/txt1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/splashProgressBar"
+                android:fontFamily="@font/open_sans_regular"
+                android:textColor="@color/celestial_blue"
+                android:text="A better way"
+                android:textSize="11sp"
+                android:layout_centerHorizontal="true" />
+            <TextView
+                android:id="@+id/txt2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/txt1"
+                android:fontFamily="@font/open_sans_regular"
+                android:textColor="@color/celestial_blue"
+                android:text="For your business"
+                android:textSize="11sp"
+                android:layout_centerHorizontal="true" />
+        </RelativeLayout>
+    </RelativeLayout>
+</RelativeLayout>

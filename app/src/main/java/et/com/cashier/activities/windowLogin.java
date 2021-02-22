@@ -2,6 +2,7 @@ package et.com.cashier.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 import et.com.cashier.R;
+import et.com.cashier.network.retrofit.pojo.Configuration;
 import et.com.cashier.network.retrofit.pojo.UserInformation;
 import et.com.cashier.network.retrofit.API;
 import et.com.cashier.network.retrofit.post.UserCredential;
@@ -24,15 +25,14 @@ import com.google.android.material.snackbar.Snackbar;
 import com.microsoft.signalr.HubConnection;
 import com.microsoft.signalr.HubConnectionBuilder;
 
+import java.io.IOException;
+
 public class windowLogin extends AppCompatActivity
 {
     private UserInformation userInformation;
     private EditText txtUserName, txtPassword;
     private Button btnLogin;
     private CheckBox checkBoxRemember;
-
-    private String jsonStr;
-    private static String urlLogin = "http://192.168.1.155:8101/Authentication/loginuser?username=%s&password=%s";
 
     private SharedPreferences sharedPreferences;
     private static final String userPreference = "userPreference";
@@ -44,6 +44,11 @@ public class windowLogin extends AppCompatActivity
     {
         return hubConnection;
     }
+
+    private boolean thingsConfigured = false;
+    public static Configuration systemConfigurations;
+
+    private windowProgress progress;
 
     public void setHubConnection(HubConnection hubConnection) {
         this.hubConnection = hubConnection;
@@ -96,8 +101,8 @@ public class windowLogin extends AppCompatActivity
                     params[0] = userName;
                     params[1] = password;
 
-                    //new GetUser().execute(params);
-                    GetUser_(userName, password);
+                    GetUser(userName, password);
+                    //systemConfigurations(userInformation.getToken());
                 }
                 else
                 {
@@ -109,10 +114,39 @@ public class windowLogin extends AppCompatActivity
             }
         });
     }
-
-    private void GetUser_(String userName, final String password)
+    private void systemConfigurations(String token)
     {
-        final windowProgress progress = windowProgress.getInstance();
+        API.configurations(token).getSystemConfigurations()
+                .enqueue(new Callback<Configuration>() {
+                    @Override
+                    public void onResponse(Call<Configuration> call, Response<Configuration> response)
+                    {
+                        if(response.isSuccessful() && response.code() == 200)
+                        {
+                            systemConfigurations = response.body();
+
+                            Intent intent = new Intent(windowLogin.this, windowDashboard.class);
+                            intent.putExtra("user", userInformation.getUser());
+                            intent.putExtra("company", userInformation.getCompany());
+                            intent.putExtra("token", userInformation.getToken());
+
+                            if (checkBoxRemember.isChecked())
+                                RememberUser(txtUserName.getText().toString(), txtPassword.getText().toString());
+                            progress.hideProgress();
+                            startActivity(intent);
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<Configuration> call, Throwable t)
+                    {
+                    }
+                });
+    }
+
+    private void GetUser(String userName, final String password)
+    {
+        progress = windowProgress.getInstance();
         progress.showProgress(windowLogin.this, "Logging in", false);
 
         UserCredential userCredential = new UserCredential();
@@ -127,15 +161,11 @@ public class windowLogin extends AppCompatActivity
                         if(response.isSuccessful() && response.code() == 200)
                         {
                             userInformation = response.body();
-                            Intent intent = new Intent(windowLogin.this, windowDashboard.class);
-                            intent.putExtra("user", userInformation.getUser());
-                            intent.putExtra("company", userInformation.getCompany());
-                            intent.putExtra("token", userInformation.getToken());
 
-                            if(checkBoxRemember.isChecked())
-                                RememberUser(txtUserName.getText().toString(), txtPassword.getText().toString());
-                            progress.hideProgress();
-                            startActivity(intent);
+                            if(userInformation != null)
+                            {
+                                systemConfigurations(userInformation.getToken());
+                            }
                         }
                         else if(response.code() == 401)
                         {
