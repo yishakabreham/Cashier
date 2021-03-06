@@ -12,14 +12,19 @@ import et.com.cashier.adapters.SeatTicket;
 import et.com.cashier.buffer.PassengerInformation;
 import et.com.cashier.buffer.TicketBuffer;
 import et.com.cashier.buffer.TicketInfo;
+import et.com.cashier.model.dto.TripValue;
 import et.com.cashier.model.transaction.TransactionElements;
 import et.com.cashier.network.retrofit.API;
+import et.com.cashier.network.retrofit.pojo.Config;
+import et.com.cashier.network.retrofit.pojo.Consignee_;
 import et.com.cashier.network.retrofit.pojo.Result;
 import et.com.cashier.network.retrofit.pojo.SeatArrangement;
 import et.com.cashier.network.retrofit.pojo.SingleSeatArrangement;
 import et.com.cashier.network.retrofit.pojo.SubTrip;
 import et.com.cashier.network.retrofit.pojo.Trip_;
 import et.com.cashier.network.retrofit.post.ItemCode;
+import et.com.cashier.utilities.CommonElements;
+import et.com.cashier.utilities.Constants;
 import et.com.cashier.utilities.EthiopianCalendar;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -118,10 +123,12 @@ public class windowSeatArrangement extends AppCompatActivity implements View.OnC
     private Trip_ trip_;
     private SubTrip parent;
     private SubTrip selectedSubTrip;
+    ArrayList<SubTrip> subTrips;
 
     private ArrayList<TicketInfo> ticketInfoList;
     private TicketInfo onProcessTicketInfo;
     private ArrayList<TransactionElements> transactionElements;
+    private TripValue tripValue;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -196,32 +203,28 @@ public class windowSeatArrangement extends AppCompatActivity implements View.OnC
                 onProcessTicketInfo = ticketInfoList.get(position);
 
                 selectedArrangement = arrangements.get(position);
+                Consignee_ consignee = new Consignee_();
                 String firstName__, middleName__, lastName__, additionalInformation__, phoneNumber__;
+                int isChild_ = 0;
 
                 if(onProcessTicketInfo != null) {
 
                     if (onProcessTicketInfo.getPassenger() != null) {
-                        firstName__ = onProcessTicketInfo.getPassenger().getFirstName();
-                        middleName__ = onProcessTicketInfo.getPassenger().getMiddleName();
-                        lastName__ = onProcessTicketInfo.getPassenger().getLastName();
-                        additionalInformation__ = onProcessTicketInfo.getPassenger().getAdditionalInformation();
-                        phoneNumber__ = onProcessTicketInfo.getPassenger().getPhoneNumber();
+                        consignee.setCode(onProcessTicketInfo.getPassenger().getCode());
+                        consignee.setFirstName(onProcessTicketInfo.getPassenger().getFirstName());
+                        consignee.setMiddleName(onProcessTicketInfo.getPassenger().getMiddleName());
+                        consignee.setLastName(onProcessTicketInfo.getPassenger().getLastName());
+                        consignee.setRemark(onProcessTicketInfo.getPassenger().getAdditionalInformation());
+                        consignee.setMobile(onProcessTicketInfo.getPassenger().getPhoneNumber());
+                        consignee.setIsActive(onProcessTicketInfo.getPassenger().getChild() == 1);
                     } else {
-                        firstName__ = "";
-                        middleName__ = "";
-                        lastName__ = "";
-                        additionalInformation__ = "";
-                        phoneNumber__ = "";
+                        consignee = null;
                     }
 
                     Intent intent = new Intent(windowSeatArrangement.this, windowPassengerDetail.class);
 
                     intent.putExtra("token", token);
-                    intent.putExtra("firstName", firstName__);
-                    intent.putExtra("middleName", middleName__);
-                    intent.putExtra("lastName", lastName__);
-                    intent.putExtra("mobile", phoneNumber__);
-                    intent.putExtra("additionalInformation", additionalInformation__);
+                    intent.putExtra("consignee", consignee);
 
                     startActivityForResult(intent, LAUNCH_PASSENGER_INFORMATION_ACTIVITY);
                 }
@@ -265,7 +268,8 @@ public class windowSeatArrangement extends AppCompatActivity implements View.OnC
 
         calculatePrice();
     }
-    private void GetData() {
+    private void GetData()
+    {
         try
         {
             Bundle bundle = getIntent().getExtras();
@@ -277,12 +281,12 @@ public class windowSeatArrangement extends AppCompatActivity implements View.OnC
             txtTripDescAm.setText(trip_.getSourceLocal() + " - " + trip_.getDestinationLocal());
 
             DateFormatter(trip_);
-            txtUnitPrice.setText(String.format("%.2f", trip_.getPrice()));
-            txtDiscount.setText(String.format("%.2f", trip_.getDiscount()));
-            txtChildrenDiscount.setText(String.format("%.2f", trip_.getDiscount()));
-            txtChildrenTotal.setText(String.format("%.2f", trip_.getDiscount()));
-            txtAdultTotal.setText(String.format("%.2f", trip_.getDiscount()));
-            txtAvailableSeats.setText(String.valueOf(trip_.getTotalSeats() - trip_.getAvailableSeats()));
+//            txtUnitPrice.setText(CommonElements.currencyFormat(String.valueOf(trip_.getPrice())));
+//            txtDiscount.setText(CommonElements.currencyFormat(String.valueOf(tripValue.getDiscount())));
+//            txtChildrenDiscount.setText(CommonElements.currencyFormat(String.valueOf(tripValue.getChildDiscount())));
+//            txtChildrenTotal.setText(CommonElements.currencyFormat(String.valueOf(tripValue.getChildPrice())));
+//            txtAdultTotal.setText(CommonElements.currencyFormat(String.valueOf(tripValue.getAdultPrice())));
+//            txtAvailableSeats.setText(String.valueOf(trip_.getTotalSeats() - trip_.getAvailableSeats()));
             txtSubRoutes.setText("0");
             txtDepartureTime.setText(String.valueOf(dTSdf.parse(trip_.getDate())));
         }
@@ -326,22 +330,30 @@ public class windowSeatArrangement extends AppCompatActivity implements View.OnC
     }
     private void renderSubTrips(Result result)
     {
+        parent = new SubTrip();
+        parent.setDestination(trip_.getDestination());
+        parent.setDestinationLocal(trip_.getDestinationLocal());
+        parent.setSource(trip_.getSource());
+        parent.setSourceLocal(trip_.getSourceLocal());
+        parent.setPrice(trip_.getPrice());
+        parent.setDiscount(trip_.getDiscount());
+        parent.setTripCode(trip_.getTripCode());
+
+        selectedSubTrip = parent;
+        tripValue = setTripValues(selectedSubTrip);
+        txtUnitPrice.setText(CommonElements.currencyFormat(String.valueOf(selectedSubTrip.getPrice())));
+        txtDiscount.setText(CommonElements.currencyFormat(String.valueOf(tripValue.getDiscount())));
+        txtChildrenDiscount.setText(CommonElements.currencyFormat(String.valueOf(tripValue.getChildDiscount())));
+        txtChildrenTotal.setText(CommonElements.currencyFormat(String.valueOf(tripValue.getChildPrice())));
+        txtAdultTotal.setText(CommonElements.currencyFormat(String.valueOf(tripValue.getAdultPrice())));
+        subTrips = new ArrayList<>();
+
         if(result.getSubTrips() != null && result.getSubTrips().size() > 0)
         {
-            ArrayList<SubTrip> subTrips = result.getSubTrips();
+            subTrips = result.getSubTrips();
             txtSubRoutes.setText(String.valueOf(subTrips.size()));
 
-            parent = new SubTrip();
-            parent.setDestination(trip_.getDestination());
-            parent.setDestinationLocal(trip_.getDestinationLocal());
-            parent.setSource(trip_.getSource());
-            parent.setSourceLocal(trip_.getSourceLocal());
-            parent.setPrice(trip_.getPrice());
-            parent.setDiscount(trip_.getDiscount());
-            parent.setTripCode(trip_.getTripCode());
-
             subTrips.add(0, parent);
-            selectedSubTrip = parent;
 
             relativeLayoutSubTrips.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -357,6 +369,7 @@ public class windowSeatArrangement extends AppCompatActivity implements View.OnC
         }
         else
         {
+            subTrips.add(parent);
             //Toast
         }
     }
@@ -516,23 +529,28 @@ public class windowSeatArrangement extends AppCompatActivity implements View.OnC
         {
             if(resultCode == Activity.RESULT_OK)
             {
-                int code = data.getIntExtra("code", 0);
-                String firstName = data.getStringExtra("firstName");
-                String middleName = data.getStringExtra("middleName");
-                String lastName = data.getStringExtra("lastName");
-                String additionalInformation = data.getStringExtra("additionalInformation");
-                String mobile = data.getStringExtra("mobile");
+                Consignee_ consignee__ = data.getParcelableExtra("consignee");
 
                 PassengerInformation passengerInformation = new PassengerInformation();
                 passengerInformation.setSeatCode(onProcessTicketInfo.getSeatCode());
                 passengerInformation.setSeatName(onProcessTicketInfo.getSeatName());
                 passengerInformation.setTripCode(tripCode);
-                passengerInformation.setCode(code);
-                passengerInformation.setFirstName(firstName);
-                passengerInformation.setMiddleName(middleName);
-                passengerInformation.setLastName(lastName);
-                passengerInformation.setAdditionalInformation(additionalInformation);
-                passengerInformation.setPhoneNumber(mobile);
+                passengerInformation.setCode(consignee__.getCode());
+                passengerInformation.setFirstName(consignee__.getFirstName());
+                passengerInformation.setMiddleName(consignee__.getMiddleName());
+                passengerInformation.setLastName(consignee__.getLastName());
+                passengerInformation.setAdditionalInformation(consignee__.getRemark());
+                passengerInformation.setPhoneNumber(consignee__.getMobile());
+                passengerInformation.setChild(consignee__.getIsActive() ? 1 : 0);
+
+                SubTrip ticketTrip = subTrips.size() > 1
+                        ? Stream.of(subTrips).filter(s -> s.getTripCode().equals(onProcessTicketInfo.getTripCode())).findFirst().orElse(null)
+                        : subTrips.get(0);
+
+                if(ticketTrip != null){
+                    TripValue ticketTripValue = setTripValues(ticketTrip);
+                    onProcessTicketInfo.setPrice(consignee__.getIsActive() ? ticketTripValue.getChildPrice() : ticketTripValue.getAdultPrice());
+                }
 
                 /*PassengerInformation toRemove = Stream.of(passengerInformationArrayList).filter(
                         x -> x.getSeatCode() == selectedArrangement.getCode()).findFirst().orElse(null);
@@ -560,13 +578,20 @@ public class windowSeatArrangement extends AppCompatActivity implements View.OnC
                 if(subTrips != null && subTrips.size() > 0)
                 {
                     selectedSubTrip = subTrips.get(0);
+                    tripValue = setTripValues(selectedSubTrip);
+                    txtUnitPrice.setText(CommonElements.currencyFormat(String.valueOf(selectedSubTrip.getPrice())));
+                    txtDiscount.setText(CommonElements.currencyFormat(String.valueOf(tripValue.getDiscount())));
+                    txtChildrenDiscount.setText(CommonElements.currencyFormat(String.valueOf(tripValue.getChildDiscount())));
+                    txtChildrenTotal.setText(CommonElements.currencyFormat(String.valueOf(tripValue.getChildPrice())));
+                    txtAdultTotal.setText(CommonElements.currencyFormat(String.valueOf(tripValue.getAdultPrice())));
+
                     txtTripDescEn.setText(selectedSubTrip.getSource() + " - " + selectedSubTrip.getDestination());
                     txtTripDescAm.setText(selectedSubTrip.getSourceLocal() + " - " + selectedSubTrip.getDestinationLocal());
-                    txtUnitPrice.setText(String.format("%.2f", selectedSubTrip.getPrice()));
-                    txtDiscount.setText(String.format("%.2f", selectedSubTrip.getDiscount()));
-                    txtChildrenDiscount.setText(String.format("%.2f", selectedSubTrip.getDiscount()));
-                    txtChildrenTotal.setText(String.format("%.2f", selectedSubTrip.getPrice()));
-                    txtAdultTotal.setText(String.format("%.2f", selectedSubTrip.getDiscount()));
+//                    txtUnitPrice.setText(String.format("%.2f", selectedSubTrip.getPrice()));
+//                    txtDiscount.setText(String.format("%.2f", selectedSubTrip.getDiscount()));
+//                    txtChildrenDiscount.setText(String.format("%.2f", selectedSubTrip.getDiscount()));
+//                    txtChildrenTotal.setText(String.format("%.2f", selectedSubTrip.getPrice()));
+//                    txtAdultTotal.setText(String.format("%.2f", selectedSubTrip.getDiscount()));
                 }
                 else
                 {
@@ -620,8 +645,8 @@ public class windowSeatArrangement extends AppCompatActivity implements View.OnC
                 cInfo.setDestinationLocal(selectedSubTrip.getDestinationLocal());
                 cInfo.setSource(selectedSubTrip.getSource());
                 cInfo.setSourceLocal(selectedSubTrip.getSourceLocal());
-                cInfo.setDiscount(selectedSubTrip.getDiscount());
-                cInfo.setPrice(selectedSubTrip.getPrice());
+                cInfo.setDiscount(tripValue.getDiscount());//selectedSubTrip.getDiscount()
+                cInfo.setPrice(tripValue.getAdultPrice());//selectedSubTrip.getPrice()
                 cInfo.setTripCode(selectedSubTrip.getTripCode());
                 cInfo.setSeatCode(sCode);
                 cInfo.setSeatName(tag.getName());
@@ -828,5 +853,32 @@ public class windowSeatArrangement extends AppCompatActivity implements View.OnC
         } catch (ParseException e) {
             e.printStackTrace();
         }
+    }
+
+    private TripValue setTripValues(SubTrip trip_)
+    {
+        double discountedPrice;
+        TripValue tripValues = new TripValue();
+        if(!trip_.getDiscount().equals(0.0))
+        {
+            tripValues.setDiscount(CommonElements.discountCalculator(trip_.getPrice(), trip_.getDiscount()));
+            discountedPrice = trip_.getPrice() - tripValues.getDiscount();
+        }
+        else
+        {
+            tripValues.setDiscount(0.0);
+            discountedPrice = trip_.getPrice();
+        }
+        tripValues.setAdultPrice(discountedPrice);
+
+        if(windowLogin.CHILD_POLICY_ENABLED && windowLogin.CHILD_DISCOUNT > 0)
+        {
+            tripValues.setChildDiscount(CommonElements.discountCalculator(discountedPrice, windowLogin.CHILD_DISCOUNT));
+            tripValues.setChildPrice(discountedPrice - tripValues.getChildDiscount());
+        }else {
+            tripValues.setChildDiscount(0.0);
+            tripValues.setChildPrice(discountedPrice);
+        }
+        return tripValues;
     }
 }

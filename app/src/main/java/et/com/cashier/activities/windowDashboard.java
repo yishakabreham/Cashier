@@ -13,6 +13,7 @@ import et.com.cashier.network.retrofit.pojo.Trip_;
 import et.com.cashier.network.retrofit.pojo.User;
 import et.com.cashier.network.retrofit.API;
 import et.com.cashier.network.retrofit.post.TripSearchCriteria;
+import et.com.cashier.utilities.CommonElements;
 import et.com.cashier.utilities.EthiopianCalendar;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -433,7 +434,7 @@ public class windowDashboard extends AppCompatActivity
             holder.sn.setText(String.valueOf(position + 1));
             holder.route.setText(trips.get(position).getSource() + " - " + trips.get(position).getDestination() +
                     " (" + trips.get(position).getSourceLocal() + " - " + trips.get(position).getDestinationLocal() + ")");
-            holder.unitPrice.setText(String.valueOf(trips.get(position).getPrice()));
+            holder.unitPrice.setText(CommonElements.currencyFormat(String.valueOf(trips.get(position).getPrice())));
 
             return rowView;
         }

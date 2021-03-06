@@ -29,6 +29,7 @@ import et.com.cashier.R;
 import et.com.cashier.fragments.trip.fragment01;
 import et.com.cashier.network.retrofit.pojo.SubTrip;
 import et.com.cashier.network.retrofit.pojo.Trip_;
+import et.com.cashier.utilities.CommonElements;
 
 public class windowSubTrips extends AppCompatActivity
 {
@@ -127,8 +128,8 @@ public class windowSubTrips extends AppCompatActivity
             holder.relativeLayout.setBackgroundColor(position != 0 ? Color.rgb(246,190,0) : Color.rgb(85, 174, 58));
             holder.tripDesc.setText(trips.get(position).getSource() + " - " + trips.get(position).getDestination());
             holder.tripDescTranslation.setText(trips.get(position).getSourceLocal() + " - " + trips.get(position).getDestinationLocal());
-            holder.tripAmount.setText(trips.get(position).getDiscount().equals(0.0) ? "ETB " + String.format("%.2f", trips.get(position).getPrice()) :
-                    "ETB " + String.format("%.2f", trips.get(position).getPrice()) + "(Dis: ETB " + String.format("%.2f", trips.get(position).getDiscount()) + ")");
+            holder.tripAmount.setText(trips.get(position).getDiscount().equals(0.0) ? "ETB " + CommonElements.currencyFormat(String.valueOf(trips.get(position).getPrice())) :
+                    "ETB " + CommonElements.currencyFormat(String.valueOf(trips.get(position).getPrice())) + "(Dis: ETB " + CommonElements.currencyFormat(String.valueOf(trips.get(position).getDiscount())) + ")");
             holder.imageView.setVisibility(trips.get(position).getTripCode().equals(selected) ? View.VISIBLE : View.INVISIBLE);
 
             return rowView;

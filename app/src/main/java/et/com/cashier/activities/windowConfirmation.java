@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
@@ -25,6 +26,7 @@ import et.com.cashier.model.transaction.SaveResult;
 import et.com.cashier.model.transaction.TransactionElements;
 import et.com.cashier.model.transaction.VoucherBuffer;
 import et.com.cashier.network.retrofit.API;
+import et.com.cashier.utilities.CommonElements;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -96,15 +98,14 @@ public class windowConfirmation extends AppCompatActivity
             }
             grandTotal = subTotal - discount;
             qty.setText(String.valueOf(quantity));
-            sub.setText(String.valueOf(subTotal));
-            dis.setText(String.valueOf(discount));
-            grand.setText(String.valueOf(grandTotal));
+            sub.setText(CommonElements.currencyFormat(String.valueOf(subTotal)));
+            dis.setText(CommonElements.currencyFormat(String.valueOf(discount)));
+            grand.setText(CommonElements.currencyFormat(String.valueOf(grandTotal)));
         }
     }
     private boolean saveTransaction()
     {
         boolean result = false;
-
         try
         {
             btnConfirm.setOnClickListener(new View.OnClickListener() {
@@ -145,15 +146,16 @@ public class windowConfirmation extends AppCompatActivity
                                     {
                                         if(response.isSuccessful() && response.code() == 200)
                                         {
+                                            Log.i("Entering Response", "200");
                                             saveResult = response.body();
                                             if(saveResult != null)
                                             {
-
+                                                Log.i("Entering Response", String.valueOf(saveResult));
                                             }
                                         }
                                         else
                                         {
-
+                                            Log.i("Error", "Error while saving transaction");
                                         }
                                         progress.hideProgress();
                                     }

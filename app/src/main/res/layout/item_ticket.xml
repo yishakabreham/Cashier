@@ -118,7 +118,7 @@
             android:id="@+id/txtSPassengerName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Yishak Abreham"
+            android:text="Yishak Abreham Gebremichael"
             android:textSize="9sp"
             android:layout_below="@id/txtSRouteDescTranslation"
             android:layout_marginTop="5dp"
@@ -147,5 +147,14 @@
             android:layout_height="24dp"
             android:layout_alignBottom="@id/txtSRouteDesc"
             android:layout_alignRight="@id/txtSTripUnitAmount" />
+        <ImageView
+            android:id="@+id/imgChild"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_alignBottom="@id/txtSRouteDesc"
+            android:layout_toLeftOf="@id/imgValidated"
+            android:src="@drawable/icon_girl"
+            android:layout_marginRight="10dp"
+            android:visibility="invisible"/>
     </RelativeLayout>
 </RelativeLayout>

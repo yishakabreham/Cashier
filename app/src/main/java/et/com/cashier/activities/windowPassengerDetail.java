@@ -21,6 +21,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.RelativeLayout;
+import android.widget.Switch;
 
 import com.google.android.material.snackbar.Snackbar;
 
@@ -37,8 +38,10 @@ public class windowPassengerDetail extends AppCompatActivity
     private ExpandableListView listView;
 
     private String firstName__, middleName__, lastName__, additionalInformation__, phoneNumber__;
+    private Boolean isChild_;
 
     private EditText firstName, middleName, lastName, phoneNumber, additionalInformation, searchNumber;
+    private Switch isChild;
 
     ExpandableListAdapter expandableListAdapter;
     ArrayList<String> expandableListTitle;
@@ -62,12 +65,14 @@ public class windowPassengerDetail extends AppCompatActivity
     {
         Bundle bundle = getIntent().getExtras();
         token = bundle.getString("token");
+        consignee_ = bundle.getParcelable("consignee");
 
-        firstName__ = bundle.getString("firstName");
-        middleName__ = bundle.getString("middleName");
-        lastName__ = bundle.getString("lastName");
-        additionalInformation__ = bundle.getString("additionalInformation");
-        phoneNumber__ = bundle.getString("mobile");
+//        firstName__ = bundle.getString("firstName");
+//        middleName__ = bundle.getString("middleName");
+//        lastName__ = bundle.getString("lastName");
+//        additionalInformation__ = bundle.getString("additionalInformation");
+//        phoneNumber__ = bundle.getString("mobile");
+//        isChild_ = bundle.getBoolean("isChild");
     }
 
     private void init()
@@ -88,17 +93,20 @@ public class windowPassengerDetail extends AppCompatActivity
 
         btnPassengerDetail = findViewById(R.id.btnPassengerDetail);
         btnSearch = findViewById(R.id.btnPassengerDetailSearchCustomer);
+        isChild = findViewById(R.id.swIsChild);
 
-        if(firstName__ != null && !firstName__.equals(""))
-            firstName.setText(firstName__);
-        if(middleName__ != null && !middleName__.equals(""))
-            middleName.setText(middleName__);
-        if(lastName__ != null && !lastName__.equals(""))
-            lastName.setText(lastName__);
-        if(additionalInformation__ != null && !additionalInformation__.equals(""))
-            additionalInformation.setText(additionalInformation__);
-        if(phoneNumber__ != null && !phoneNumber__.equals(""))
-            phoneNumber.setText(phoneNumber__);
+//        if(firstName__ != null && !firstName__.equals(""))
+//            firstName.setText(firstName__);
+//        if(middleName__ != null && !middleName__.equals(""))
+//            middleName.setText(middleName__);
+//        if(lastName__ != null && !lastName__.equals(""))
+//            lastName.setText(lastName__);
+//        if(additionalInformation__ != null && !additionalInformation__.equals(""))
+//            additionalInformation.setText(additionalInformation__);
+//        if(phoneNumber__ != null && !phoneNumber__.equals(""))
+//            phoneNumber.setText(phoneNumber__);
+//        isChild.setChecked(isChild_);
+        setFields(consignee_, false);
 
         mobileNumber = searchNumber.getText().toString();
         ItemCode itemCode = new ItemCode();
@@ -130,7 +138,7 @@ public class windowPassengerDetail extends AppCompatActivity
             public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id)
             {
                 consignee_ = (Consignee_)parent.getExpandableListAdapter().getChild (groupPosition, childPosition);
-                setFields(consignee_);
+                setFields(consignee_, true);
                 return false;
             }
         });
@@ -160,7 +168,7 @@ public class windowPassengerDetail extends AppCompatActivity
                                             {
                                                 listContainer.setVisibility(View.GONE);
                                                 Consignee_ consignee_ = consignees_.get(0);
-                                                setFields(consignee_);
+                                                setFields(consignee_, true);
                                             }
                                             else
                                             {
@@ -204,12 +212,16 @@ public class windowPassengerDetail extends AppCompatActivity
             {
                 Intent intent = new Intent(windowPassengerDetail.this, windowSeatArrangement.class);
 
-                intent.putExtra("code", consignee_.getCode());
-                intent.putExtra("firstName", firstName.getText().toString());
-                intent.putExtra("middleName", middleName.getText().toString());
-                intent.putExtra("lastName", lastName.getText().toString());
-                intent.putExtra("additionalInformation", additionalInformation.getText().toString());
-                intent.putExtra("mobile", phoneNumber.getText().toString());
+                Consignee_ consignee__ = new Consignee_();
+                consignee__.setCode(consignee_.getCode());
+                consignee__.setFirstName(firstName.getText().toString());
+                consignee__.setMiddleName(middleName.getText().toString());
+                consignee__.setLastName(lastName.getText().toString());
+                consignee__.setMobile(phoneNumber.getText().toString());
+                consignee__.setIsActive(isChild.isChecked());
+                consignee__.setRemark(additionalInformation.getText().toString());
+
+                intent.putExtra("consignee", consignee__);
 
                 setResult(RESULT_OK, intent);
                 finish();
@@ -217,13 +229,14 @@ public class windowPassengerDetail extends AppCompatActivity
         });
     }
 
-    private void setFields(Consignee_ consignee_){
+    private void setFields(Consignee_ consignee_, boolean isFromSearch){
         if(consignee_ != null) {
             firstName.setText(consignee_.getFirstName());
             middleName.setText(consignee_.getMiddleName());
             lastName.setText(consignee_.getLastName());
             phoneNumber.setText(consignee_.getMobile());
             additionalInformation.setText(String.valueOf(consignee_.getRemark()) != "null" ? String.valueOf(consignee_.getRemark()) : "");
+            isChild.setChecked(!isFromSearch && consignee_.getIsActive());
         }
     }
 }

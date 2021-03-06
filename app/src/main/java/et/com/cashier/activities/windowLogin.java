@@ -2,10 +2,13 @@ package et.com.cashier.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 import et.com.cashier.R;
+import et.com.cashier.network.retrofit.pojo.Config;
 import et.com.cashier.network.retrofit.pojo.Configuration;
 import et.com.cashier.network.retrofit.pojo.UserInformation;
 import et.com.cashier.network.retrofit.API;
 import et.com.cashier.network.retrofit.post.UserCredential;
+import et.com.cashier.utilities.CommonElements;
+import et.com.cashier.utilities.Constants;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -29,6 +32,11 @@ import java.io.IOException;
 
 public class windowLogin extends AppCompatActivity
 {
+    //region Configurations
+    public static boolean CHILD_POLICY_ENABLED = false;
+    public static double CHILD_DISCOUNT = 0.0;
+
+    //endregion
     private UserInformation userInformation;
     private EditText txtUserName, txtPassword;
     private Button btnLogin;
@@ -124,6 +132,7 @@ public class windowLogin extends AppCompatActivity
                         if(response.isSuccessful() && response.code() == 200)
                         {
                             systemConfigurations = response.body();
+                            populateConfigurations(systemConfigurations);
 
                             Intent intent = new Intent(windowLogin.this, windowDashboard.class);
                             intent.putExtra("user", userInformation.getUser());
@@ -224,6 +233,18 @@ public class windowLogin extends AppCompatActivity
         }
         if (sharedPreferences.contains(password)) {
             txtPassword.setText(sharedPreferences.getString(password, ""));
+        }
+    }
+    private void populateConfigurations(Configuration configuration)
+    {
+        Config config;
+        if(configuration != null)
+        {
+            config = CommonElements.getSystemConfiguration(Constants.ENABLE_CHILD_POLICY);
+            CHILD_POLICY_ENABLED = config != null && config.getCurrentValue().toLowerCase().equals("true");
+
+            config = CommonElements.getSystemConfiguration(Constants.CHILDREN_DISCOUNT);
+            CHILD_DISCOUNT = config != null && !config.getCurrentValue().isEmpty() ? Double.parseDouble(config.getCurrentValue()) : 0.0;
         }
     }
 }

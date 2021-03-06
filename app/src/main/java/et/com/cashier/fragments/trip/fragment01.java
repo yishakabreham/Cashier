@@ -44,6 +44,7 @@ import et.com.cashier.network.retrofit.pojo.Trip;
 import et.com.cashier.network.retrofit.pojo.Trip_;
 import et.com.cashier.network.retrofit.post.TripSearchCriteria;
 import et.com.cashier.activities.windowProgress;
+import et.com.cashier.utilities.CommonElements;
 import et.com.cashier.utilities.EthiopianCalendar;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -158,6 +159,10 @@ public class fragment01 extends Fragment {
 
             rowView = inflater.inflate(R.layout.item_trips_list, null);
 
+            double discountFigure = 0;
+            if(!trips.get(position).getDiscount().equals(0.0))
+                discountFigure = CommonElements.discountCalculator(trips.get(position).getPrice(), trips.get(position).getDiscount());
+
             holder.availSeats = rowView.findViewById(R.id.txtAvailSeats_);
             holder.availSubTrips = rowView.findViewById(R.id.txtAvailSubRoutes_);
             holder.tripDesc = rowView.findViewById(R.id.txtRouteDesc);
@@ -168,8 +173,8 @@ public class fragment01 extends Fragment {
             holder.availSubTrips.setText(String.valueOf(trips.get(position).getSubTripsCount()));
             holder.tripDesc.setText(trips.get(position).getSource() + " - " + trips.get(position).getDestination());
             holder.tripDescTranslation.setText(trips.get(position).getSourceLocal() + " - " + trips.get(position).getDestinationLocal());
-            holder.tripAmount.setText(trips.get(position).getDiscount().equals(0.0) ? "ETB " + String.format("%.2f", trips.get(position).getPrice()) :
-                    "ETB " + String.format("%.2f", trips.get(position).getPrice()) + "(Dis: ETB " + String.format("%.2f", trips.get(position).getDiscount()) + ")"); //"ETB 750.0 (Dis: ETB 50.0)");
+            holder.tripAmount.setText(discountFigure == 0 ? "ETB " + CommonElements.currencyFormat(String.valueOf(trips.get(position).getPrice())) :
+                    "ETB " + CommonElements.currencyFormat(String.valueOf(trips.get(position).getPrice())) + "(Dis: ETB " + CommonElements.currencyFormat(String.valueOf(discountFigure)) + ")");
 
             return rowView;
         }
@@ -261,12 +266,6 @@ public class fragment01 extends Fragment {
                 intent.putExtra("tripCode", trip_.getTripCode());
 
                 intent.putExtra("selectedTrip", trip_);
-//                intent.putExtra("date", selectedDate);
-//                intent.putExtra("sourceEn", trip_.getSource());
-//                intent.putExtra("sourceAm", trip_.getSourceLocal());
-//                intent.putExtra("destinationEn", trip_.getDestination());
-//                intent.putExtra("destinationAm", trip_.getDestinationLocal());
-//                intent.putExtra("numberOfAvailableSeats", trip_.getAvailableSeats());
 
                 startActivity(intent);
             }

@@ -17,6 +17,7 @@ import et.com.cashier.activities.windowPassengerDetail;
 import et.com.cashier.buffer.TicketInfo;
 import et.com.cashier.network.retrofit.pojo.SeatArrangement;
 import et.com.cashier.network.retrofit.pojo.SubTrip;
+import et.com.cashier.utilities.CommonElements;
 
 public class SeatTicket extends RecyclerView.Adapter<SeatTicket.TicketViewHolder>
 {
@@ -27,13 +28,14 @@ public class SeatTicket extends RecyclerView.Adapter<SeatTicket.TicketViewHolder
 
     public static class TicketViewHolder extends RecyclerView.ViewHolder
     {
-        ImageView imageValidated;
+        ImageView imageValidated, imageIsChild;
         TextView seatName, txtRouteDescEn, txtRouteDescAm, txtUnitPrice, txtPassengerName, txtPassengerPhoneNumber;
 
         public TicketViewHolder(View v) {
             super(v);
 
             imageValidated = v.findViewById(R.id.imgValidated);
+            imageIsChild = v.findViewById(R.id.imgChild);
             seatName = v.findViewById(R.id.txtSeatName);
             txtRouteDescEn = v.findViewById(R.id.txtSRouteDesc);
             txtRouteDescAm = v.findViewById(R.id.txtSRouteDescTranslation);
@@ -80,9 +82,9 @@ public class SeatTicket extends RecyclerView.Adapter<SeatTicket.TicketViewHolder
         holder.seatName.setText(list.get(position).getSeatName());
         holder.txtRouteDescEn.setText(list.get(position).getSource() + " - " + list.get(position).getDestination());
         holder.txtRouteDescAm.setText(list.get(position).getSourceLocal() + " - " + list.get(position).getDestinationLocal());
-        holder.txtUnitPrice.setText(list.get(position).getDiscount().equals(0.0) ? "ETB " + String.format("%.2f", list.get(position).getPrice()) :
-                "ETB " + String.format("%.2f", list.get(position).getPrice()) + "(Dis: ETB " + String.format("%.2f", list.get(position).getDiscount()) + ")");
-
+        holder.txtUnitPrice.setText(list.get(position).getDiscount().equals(0.0) ? "ETB " + CommonElements.currencyFormat(String.valueOf(list.get(position).getPrice())) :
+                "ETB " + CommonElements.currencyFormat(String.valueOf(list.get(position).getPrice())));
+        holder.imageIsChild.setVisibility(list.get(position).getPassenger() != null && list.get(position).getPassenger().getChild() == 1 ? View.VISIBLE : View.INVISIBLE);
     }
     @Override
     public int getItemCount() {

@@ -1,7 +1,10 @@
 package et.com.cashier.buffer;
 
+import android.os.Build;
 import android.os.Parcel;
 import android.os.Parcelable;
+
+import androidx.annotation.RequiresApi;
 
 import et.com.cashier.network.retrofit.pojo.UserInformation;
 
@@ -17,6 +20,15 @@ public class PassengerInformation implements Parcelable
     private String busCode;
     private String seatCode;
     private String seatName;
+    private int isChild;
+
+    public int getChild() {
+        return isChild;
+    }
+
+    public void setChild(int child) {
+        isChild = child;
+    }
 
     public PassengerInformation(){}
     public PassengerInformation(Parcel in)
@@ -31,6 +43,7 @@ public class PassengerInformation implements Parcelable
         busCode = in.readString();
         seatCode = in.readString();
         seatName = in.readString();
+        isChild = in.readInt();
     }
 
     public String getFirstName() {
@@ -122,6 +135,7 @@ public class PassengerInformation implements Parcelable
         dest.writeString(busCode);
         dest.writeString(seatCode);
         dest.writeString(seatName);
+        dest.writeInt(isChild);
     }
     public static final Parcelable.Creator<PassengerInformation> CREATOR = new Parcelable.Creator<PassengerInformation>() {
         public PassengerInformation createFromParcel(Parcel in) {
