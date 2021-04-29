@@ -93,10 +93,10 @@ public class windowConfirmation extends AppCompatActivity
             quantity = ticketInfoList.size();
             for(TicketInfo ticketInfo : ticketInfoList)
             {
-                subTotal += ticketInfo.getPrice();
+                grandTotal += ticketInfo.getPrice();
                 discount += ticketInfo.getDiscount();
             }
-            grandTotal = subTotal - discount;
+            subTotal = grandTotal + discount;
             qty.setText(String.valueOf(quantity));
             sub.setText(CommonElements.currencyFormat(String.valueOf(subTotal)));
             dis.setText(CommonElements.currencyFormat(String.valueOf(discount)));

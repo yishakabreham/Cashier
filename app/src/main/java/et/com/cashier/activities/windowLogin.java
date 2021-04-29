@@ -35,8 +35,9 @@ public class windowLogin extends AppCompatActivity
     //region Configurations
     public static boolean CHILD_POLICY_ENABLED = false;
     public static double CHILD_DISCOUNT = 0.0;
-
     //endregion
+    public static String token;
+
     private UserInformation userInformation;
     private EditText txtUserName, txtPassword;
     private Button btnLogin;
@@ -173,6 +174,7 @@ public class windowLogin extends AppCompatActivity
 
                             if(userInformation != null)
                             {
+                                token = userInformation.getToken();
                                 systemConfigurations(userInformation.getToken());
                             }
                         }
