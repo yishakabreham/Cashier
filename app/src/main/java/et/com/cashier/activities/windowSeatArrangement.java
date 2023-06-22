@@ -775,7 +775,8 @@ public class windowSeatArrangement extends AppCompatActivity implements View.OnC
                 for(String seat : data)
                 {
                     seatIDs id = map.get(seat);
-                    try {
+                    try
+                    {
                         View p = linearLayout.findViewById(id.getxID());
                         View py = p.findViewById(id.getyID());
                         if (type == 1)

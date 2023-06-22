@@ -17,6 +17,7 @@
         android:layout_below="@id/recyclerDate">
         <include layout="@layout/custom_search_layout" />
     </RelativeLayout>
+
     <ListView
         android:id="@+id/listTrips"
         android:layout_width="match_parent"

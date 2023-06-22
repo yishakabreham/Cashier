@@ -26,121 +26,132 @@
                     android:id="@+id/profilePicIV"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:layout_marginRight="5dp"
                     android:background="@android:color/white"
                     android:padding="5dp"
-                    app:srcCompat="@drawable/icon_cashier"
-                    android:layout_marginRight="5dp" />
+                    app:srcCompat="@drawable/icon_cashier" />
             </RelativeLayout>
+
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="103dp"
                 android:layout_toRightOf="@id/rlUserPhoto"
                 android:background="@drawable/custom_relative_layout">
+
                 <TextView
                     android:id="@+id/compTV"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginTop="3dp"
                     android:fontFamily="@font/open_sans_regular"
-                    android:paddingBottom="2dp"
                     android:paddingTop="2dp"
+                    android:paddingBottom="2dp"
                     android:text="Selam Bus Private Limited Company (PLC)"
+                    android:textAllCaps="true"
                     android:textColor="@color/st_patrick_blue"
                     android:textSize="11sp"
-                    android:textStyle="bold"
-                    android:textAllCaps="true"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginTop="3dp"/>
+                    android:textStyle="bold" />
+
                 <TextView
                     android:id="@+id/userNTV"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/compTV"
+                    android:layout_alignLeft="@id/compTV"
+                    android:layout_marginTop="10dp"
                     android:fontFamily="@font/open_sans_regular"
-                    android:paddingBottom="2dp"
                     android:paddingTop="2dp"
+                    android:paddingBottom="2dp"
                     android:text="Yishak Abreham"
                     android:textAllCaps="true"
                     android:textColor="@color/blueBlack"
-                    android:textSize="10sp"
-                    android:layout_alignLeft="@id/compTV"
-                    android:layout_marginTop="10dp"/>
+                    android:textSize="10sp" />
+
                 <TextView
                     android:id="@+id/userRoleTV"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/userNTV"
+                    android:layout_alignLeft="@id/compTV"
                     android:fontFamily="@font/open_sans_regular"
                     android:paddingBottom="2dp"
                     android:text="Cashier"
                     android:textColor="@color/blueBlack"
-                    android:textSize="10sp"
-                    android:layout_alignLeft="@id/compTV"/>
+                    android:textSize="10sp" />
+
                 <TextView
                     android:id="@+id/dateEn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/userRoleTV"
+                    android:layout_alignLeft="@id/compTV"
                     android:fontFamily="@font/open_sans_regular"
                     android:paddingBottom="2dp"
                     android:text="Tuesday October 27, 2020"
                     android:textColor="@color/blueBlack"
-                    android:textSize="10sp"
-                    android:layout_alignLeft="@id/compTV"/>
+                    android:textSize="10sp" />
+
                 <TextView
                     android:id="@+id/dateAm"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/dateEn"
+                    android:layout_alignLeft="@id/dateEn"
                     android:fontFamily="@font/open_sans_regular"
                     android:paddingBottom="2dp"
                     android:text="ማክሰኞ ጥቅምት 17 2013"
                     android:textColor="@color/blueBlack"
-                    android:textSize="10sp"
-                    android:layout_alignLeft="@id/dateEn"/>
+                    android:textSize="10sp" />
             </RelativeLayout>
         </RelativeLayout>
     </RelativeLayout>
+
     <RelativeLayout
         android:id="@+id/welcoming"
         android:layout_width="match_parent"
         android:layout_height="45dp"
         android:layout_below="@id/rlInformationPanel">
+
         <ImageView
             android:id="@+id/icon_dashboard"
             android:layout_width="44dp"
             android:layout_height="44dp"
-            android:src="@drawable/icon_dashboard"
-            android:padding="10dp"/>
+            android:padding="10dp"
+            android:src="@drawable/icon_dashboard" />
+
         <RelativeLayout
             android:id="@+id/view1"
             android:layout_width="1dp"
             android:layout_height="match_parent"
+            android:layout_margin="5dp"
             android:layout_toRightOf="@id/icon_dashboard"
-            android:background="@color/lightGray"
-            android:layout_margin="5dp"/>
+            android:background="@color/lightGray" />
+
         <TextView
             android:id="@+id/quick"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/view1"
-            android:text="Quick Dashboard"
-            android:fontFamily="@font/open_sans_regular"
-            android:textColor="@color/st_patrick_blue"
-            android:textSize="10sp"
-            android:layout_marginTop="8dp"
             android:layout_marginLeft="6dp"
-            android:textAllCaps="true"/>
+            android:layout_marginTop="8dp"
+            android:layout_toRightOf="@id/view1"
+            android:fontFamily="@font/open_sans_regular"
+            android:text="Quick Dashboard"
+            android:textAllCaps="true"
+            android:textColor="@color/st_patrick_blue"
+            android:textSize="10sp" />
+
         <TextView
             android:id="@+id/quickWelcome"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/quick"
-            android:text="Welcome to your dashboard, Yishak Abreham"
-            android:fontFamily="@font/open_sans_regular"
-            android:textColor="@color/celestial_blue"
-            android:textSize="9sp"
             android:layout_alignLeft="@id/quick"
-            android:textAllCaps="true"/>
+            android:fontFamily="@font/open_sans_regular"
+            android:text="Welcome to your dashboard, Yishak Abreham"
+            android:textAllCaps="true"
+            android:textColor="@color/celestial_blue"
+            android:textSize="9sp" />
     </RelativeLayout>
     <RelativeLayout
         android:id="@+id/letsBooking"
@@ -148,15 +159,16 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/welcoming"
         android:background="@color/whiteSmock">
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Let's Booking"
             android:fontFamily="@font/open_sans_regular"
-            android:textColor="@color/st_patrick_blue"
-            android:textSize="9sp"
             android:padding="10dp"
-            android:textAllCaps="true"/>
+            android:text="Let's Booking"
+            android:textAllCaps="true"
+            android:textColor="@color/st_patrick_blue"
+            android:textSize="9sp" />
     </RelativeLayout>
     <RelativeLayout
         android:id="@+id/parentLayoutNEW"
